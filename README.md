@@ -6,23 +6,27 @@ Es una sola página (`index.html`), sin dependencias ni build: solo HTML, CSS y 
 
 ## 🚀 Publicar en GitHub Pages
 
-### Opción A: desde la web de GitHub (sin comandos)
-1. Entra a [github.com/new](https://github.com/new) y crea un repositorio **público** (por ejemplo `minijuego`).
-2. Pulsa **uploading an existing file** y sube `index.html`, `README.md` y `.nojekyll`. Confirma con **Commit changes**.
-3. Ve a **Settings → Pages**.
-4. En **Build and deployment**, elige **Deploy from a branch**, rama **main** y carpeta **/ (root)**. Guarda.
-5. Espera 1 o 2 minutos. Tu web quedará en `https://TU-USUARIO.github.io/minijuego/`.
+Repositorio: https://github.com/IamFenixDesign/web
+Web publicada: **https://iamfenixdesign.github.io/web/**
 
-### Opción B: con git
+### Actualizar los archivos (desde la web de GitHub)
+1. Abre el repositorio y entra a `index.html`, pulsa el lápiz ✏️ (o **Add file → Upload files**) y reemplázalo por el `index.html` nuevo. Haz lo mismo con `README.md`.
+2. Confirma con **Commit changes** directo a la rama `main`.
+
+### Actualizar los archivos (con git)
 ```bash
-git init
+git clone https://github.com/IamFenixDesign/web.git
+cd web
+# copia aquí el index.html y el README.md nuevos
 git add .
-git commit -m "Minijuego del día"
-git branch -M main
-git remote add origin https://github.com/TU-USUARIO/minijuego.git
-git push -u origin main
+git commit -m "Actualizar minijuego"
+git push origin main
 ```
-Después sigue los pasos 3 a 5 de la opción A.
+
+### Activar GitHub Pages (solo la primera vez)
+1. Ve a **Settings → Pages**.
+2. En **Build and deployment**, elige **Deploy from a branch**, rama **main** y carpeta **/ (root)**. Guarda.
+3. Espera 1 o 2 minutos y abre https://iamfenixdesign.github.io/web/
 
 ## ✏️ Cómo personalizarlo
 Todo está en `index.html`, dentro de la etiqueta `<script>`:

@@ -39,5 +39,4 @@ Todo está en `index.html`, dentro de la etiqueta `<script>`:
 ## ℹ️ Cosas a tener en cuenta
 - Los días se desbloquean según la fecha del dispositivo de quien abre la web.
 - El progreso y las pistas usadas se guardan en el navegador (localStorage), así que no se comparten entre dispositivos.
-- Truco de prueba: toca el título 5 veces para desbloquear todos los días.
 - Si cambias los juegos o las fechas, cambia también la constante `K` (por ejemplo a `mini-v4`) para reiniciar el progreso guardado.

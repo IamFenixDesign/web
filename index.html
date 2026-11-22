@@ -149,6 +149,11 @@ input{-webkit-user-select:text;user-select:text;font-size:16px!important;touch-a
 @media (orientation:landscape) and (max-height:500px) and (hover:none){#rot{position:fixed;inset:0;z-index:100;display:grid;place-items:center;text-align:center;padding:20px;background:var(--bg);color:var(--tx);font-weight:900;font-size:1.2rem;line-height:1.5}}
 @media (max-width:700px),(hover:none){.soon{margin-bottom:30px}}
 h1{cursor:default}
+.opts.s .o{font-size:clamp(1.3rem,4.2vh,2rem)}
+.opts.s .o b{width:22px;height:22px;font-size:.7rem}
+.opts.m .o{font-size:clamp(.95rem,2.6vh,1.15rem)}
+.opts.l .o{font-size:clamp(.8rem,2.2vh,.95rem)}
+.o span{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -207,7 +212,7 @@ if(!r.t)choice(g,m,i,r);else if(r.t=="scr")scr(g,m,i,r);else if(r.t=="mem")mem(g
 
 score()}
 function choice(g,m,i,r){
-g.innerHTML=`<div class="q">${r.q}</div><div class="opts"></div>`;const o=g.querySelector(".opts");
+g.innerHTML=`<div class="q">${r.q}</div><div class="opts"></div>`;const o=g.querySelector(".opts"),L=Math.max(...r.o.map(t=>t.length));o.classList.add(L<=8?"s":L<=22?"m":"l");
 r.o.forEach((t,k)=>{const b=document.createElement("button");b.className="o";b.innerHTML=`<b>${"ABCD"[k]}</b><span></span>`;b.lastChild.textContent=t;
 b.onclick=()=>{if(k===r.a){b.classList.add("ok");[...o.children].forEach(x=>x.disabled=true);win(i,m,"¡Correcto! 🎉")}else{b.classList.add("no");m.textContent="Ups, prueba otra vez 😅";setTimeout(()=>{b.classList.remove("no");if(!st[i])m.textContent=""},800)}};o.appendChild(b)});
 if(st[i]){o.children[r.a].classList.add("ok");[...o.children].forEach(x=>x.disabled=true)}}

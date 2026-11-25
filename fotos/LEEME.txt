@@ -1,0 +1,3 @@
+CARPETA DE FOTOS
+Sube aquí cualquier imagen (jpg, png, webp, gif, avif, svg...) o video (mp4, webm, mov...). Se muestra solo, ordenado por nombre.
+El nombre que se ve sale del nombre del archivo: "con-las-amigas.jpg" se muestra como "Con las amigas".

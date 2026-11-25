@@ -1,42 +1,51 @@
-# 🎲 Minijuego del día
+# Feliz cumpleaños Isa
 
-Una web con un minijuego distinto cada día (del 21 de noviembre al 4 de diciembre de 2026). Cada día se desbloquea con la fecha real y el último día hay una tarjeta de rasca y gana con el premio.
+Web de cumpleaños con diseño estilo Windows 11. Cada sección es una **carpeta del escritorio** que se abre en su propia ventana:
 
-Es una sola página (`index.html`), sin dependencias ni build: solo HTML, CSS y JavaScript.
+| Ícono | Qué muestra | Carpeta del repositorio |
+|---|---|---|
+| Inicio | Es el fondo de la web (no una ventana): banderines en el borde superior, cartel "Feliz cumpleaños Isa", pastel con velas, globos y confeti. El botón de la casa en la barra minimiza las ventanas y vuelve a él | |
+| Fotos | Las fotos de Isa | `fotos/` |
+| Videos | Los videos | `videos/` |
+| Dedicatorias | Las dedicatorias (archivos `.txt`) | `dedicatorias/` |
+| Carta especial | Muestra directamente el sobre; al tocarlo, la carta se abre en pantalla completa (`carta.txt`) | `carta-especial/` |
 
-## 🚀 Publicar en GitHub Pages
+Ya no hace falta ningún `lista.json`: la web lee sola los archivos de cada carpeta. En la página no existe la opción de subir archivos: solo se muestra lo que está guardado en las carpetas.
 
+```
+index.html
+minijuegos.html        (la versión anterior con los minijuegos)
+fotos/          tus fotos y videos
+videos/         tus videos
+dedicatorias/   archivos .txt
+carta-especial/ carta.txt
+```
+
+## Cómo agregar archivos
+Solo sube el archivo a su carpeta (por ejemplo, `fotos/foto1.jpg`). Aparece solo, ordenado por nombre, y el nombre que se ve sale del archivo (`con-las-amigas.jpg` → "Con las amigas").
+
+- **Fotos y videos:** cualquier imagen (jpg, png, webp, gif, avif, svg) o video (mp4, webm, mov) que subas a `fotos/` o `videos/` se muestra solo, con su miniatura. Por la web de GitHub el límite es de 25 MB por archivo; con git llega a 100 MB.
+- **Dedicatorias y carta:** archivos `.txt`. Separa los párrafos con una línea en blanco. Si el último párrafo empieza con `—`, se muestra como firma.
+
+## Publicar en GitHub Pages
 Repositorio: https://github.com/IamFenixDesign/web
 Web publicada: **https://iamfenixdesign.github.io/web/**
 
-### Actualizar los archivos (desde la web de GitHub)
-1. Abre el repositorio y entra a `index.html`, pulsa el lápiz ✏️ (o **Add file → Upload files**) y reemplázalo por el `index.html` nuevo. Haz lo mismo con `README.md`.
-2. Confirma con **Commit changes** directo a la rama `main`.
+1. Sube al repositorio todo el contenido de este zip, con sus carpetas.
+2. Ve a **Settings > Pages**, elige **GitHub Actions** (o **Deploy from a branch**, rama **main**, carpeta **/ (root)**).
+3. En uno o dos minutos la web estará en la dirección de arriba.
 
-### Actualizar los archivos (con git)
-```bash
-git clone https://github.com/IamFenixDesign/web.git
-cd web
-# copia aquí el index.html y el README.md nuevos
-git add .
-git commit -m "Actualizar minijuego"
-git push origin main
-```
+Al subir un archivo, la web lo muestra sola en uno o dos minutos, incluso con la web abierta: se revisa cada 30 segundos y sin recargar la página. La lista se obtiene de la API pública de GitHub (límite de 60 consultas por hora por visitante, más que suficiente para esta web).
 
-### Activar GitHub Pages (solo la primera vez)
-1. Ve a **Settings → Pages**.
-2. En **Build and deployment**, elige **Deploy from a branch**, rama **main** y carpeta **/ (root)**. Guarda.
-3. Espera 1 o 2 minutos y abre https://iamfenixdesign.github.io/web/
+## Abrir la web con doble clic (desde tu PC)
+Un navegador no deja que una página lea sola las carpetas de tu PC; hay que darle permiso una vez:
+1. Abre `index.html` y toca el botón **"Elegir la carpeta de la web"**. Elige la carpeta que contiene `index.html`, `fotos`, `videos`...
+2. Listo: se muestran los archivos y, mientras la web esté abierta, se actualiza sola cada 30 segundos al agregar o quitar archivos. No hay que ejecutar nada más.
+3. Al volver a abrir la web, el primer toque en cualquier parte pide de nuevo el permiso (o usa "Reconectar la carpeta"). Si el navegador ofrece "Permitir en cada visita", elígelo.
+Funciona en Chrome, Edge y Opera.
 
-## ✏️ Cómo personalizarlo
-Todo está en `index.html`, dentro de la etiqueta `<script>`:
-- **Fechas:** las constantes `Y`, `M` y `D0` (año, mes empezando en 0 y día de inicio).
-- **Juegos del día:** la lista `R`. Hay de tipo adivinanza, emojis, secuencia, trivia, ordenar letras (con 3 pistas), memoria, reflejos y rasca y gana.
-- **Premio:** el texto "Tatuaje de besties" dentro de la función `scratch`.
-- **Aviso del 21 de diciembre:** la fecha `tgt` y el texto de la función `upd`.
-- **Gatos:** el número de stickers (`n<20`) y la lista de emojis `E`.
+## En GitHub Pages
+Aquí no hay que dar ningún permiso: la web lee las carpetas del repositorio y se actualiza sola. El repositorio debe tener las carpetas con tus archivos (`fotos/foto1.jpg`, no solo `index.html`) y el `index.html` de esta versión. Al subir, usa "Add file > Upload files" y arrastra las carpetas completas. Pasados 1 o 2 minutos aparecen solas.
 
-## ℹ️ Cosas a tener en cuenta
-- Los días se desbloquean según la fecha del dispositivo de quien abre la web.
-- El progreso y las pistas usadas se guardan en el navegador (localStorage), así que no se comparten entre dispositivos.
-- Si cambias los juegos o las fechas, cambia también la constante `K` (por ejemplo a `mini-v4`) para reiniciar el progreso guardado.
+## De dónde sale el contenido
+Todo lo que se ve sale únicamente de los archivos que están dentro de cada carpeta (`fotos/`, `videos/`, `dedicatorias/`, `carta-especial/`). La web ya no trae textos ni fotos de ejemplo guardados dentro de `index.html`: si borras `carta.txt` o `para-isa.txt`, dejan de verse.

@@ -1,0 +1,4 @@
+Coloca aquí el archivo MP3 que sonará en el reproductor de la pantalla de Inicio.
+El nombre debe ser exactamente: cancion.mp3
+Ruta esperada: audio/cancion.mp3
+El reproductor usa este archivo localmente y no abre YouTube.

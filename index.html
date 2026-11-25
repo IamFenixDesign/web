@@ -95,13 +95,10 @@ h1 b{display:block;font-size:clamp(4rem,15vw,8rem);line-height:.95;background:li
 .w .bx{display:grid;place-items:center;width:44px;height:44px;border-radius:10px;background:var(--acc);color:#fff;font-size:22px;flex:none}
 .w b{display:block}.w small{color:var(--mu)}
 /* reproductor de música en el inicio */
-.music-card{display:flex;align-items:center;gap:12px;width:min(440px,100%);margin:12px auto 4px;padding:12px 14px;border:1px solid rgba(255,255,255,.3);border-radius:14px;background:rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.12)}
-.music-art{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#ff5fa2,#7c5cff);font-size:25px}
-.music-info{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
-.music-info b{font-size:.9rem}.music-info span{font-size:.74rem;opacity:.8}
-.music-toggle{display:grid;place-items:center;flex:none;width:42px;height:42px;border:0;border-radius:50%;background:#fff;color:#6e42c8;font-size:17px}
-.music-toggle:hover{transform:scale(1.05)}
-.yt-player{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);pointer-events:none}
+.music-card{display:flex;justify-content:center;align-items:center;margin:12px auto 4px}
+.music-toggle{display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:#fff;color:#6e42c8;font-size:18px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.16);transition:transform .15s}
+.music-toggle:hover{transform:scale(1.06)}
+.site-audio{display:none}
 /* videos */
 .vg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
 .vc{display:block;padding:10px;text-align:left;border:1px solid var(--bd);border-radius:10px;background:var(--card);transition:transform .15s}
@@ -400,11 +397,9 @@ button, .fo, .di, .tab, .ti {
 <p class="wish" id="wish">Pedí un deseo</p>
 </div>
 </div>
-<div class="music-card" aria-label="Reproductor de música">
-  <div class="music-art" aria-hidden="true">♫</div>
-  <div class="music-info"><b>Una canción para Isa</b><span>Reproduciendo desde YouTube</span></div>
-  <button class="music-toggle" id="music-toggle" type="button" aria-label="Reproducir canción" title="Reproducir"><span id="music-icon">▶</span></button>
-  <div id="yt-player" class="yt-player" aria-hidden="true"></div>
+<div class="music-card">
+  <button class="music-toggle" id="music-toggle" type="button" aria-label="Reproducir" title="Reproducir"><span id="music-icon">▶</span></button>
+  <audio id="site-audio" preload="none"></audio>
 </div>
 </div>
 <div id="c-fotos"><div class="fl" id="fl-fotos"></div><div class="stb" id="st-fotos"></div></div>
@@ -487,11 +482,11 @@ try{const r=await fetch(srcOf(id,it),{cache:"no-store"});return r.ok?await r.tex
 async function initLocal(){if(!LOCAL)return;const pk=$("#pick");pk.hidden=false;pk.textContent="Elegir la carpeta de la web para ver tus archivos";
 ROOT=await hGet();
 if(ROOT){try{if((await ROOT.queryPermission({mode:"read"}))==="granted")pk.hidden=true;else pk.textContent="Reconectar la carpeta de la web"}catch(e){ROOT=null}}
-if(ROOT&&!pk.hidden){const once=async e=>{if(e.target.closest&&e.target.closest("#pick"))return;removeEventListener("pointerdown",once,true);try{if((await ROOT.requestPermission({mode:"read"}))==="granted"){pk.hidden=true;for(const k in SIG)delete SIG[k];scan()}}catch(x){}};addEventListener("pointerdown",once,true)}
+if(ROOT&&!pk.hidden){const once=async e=>{if(e.target.closest&&e.target.closest("#pick"))return;removeEventListener("pointerdown",once,true);try{if((await ROOT.requestPermission({mode:"read"}))==="granted"){pk.hidden=true;for(const k in SIG)delete SIG[k];scan();prepararAudio()}}catch(x){}};addEventListener("pointerdown",once,true)}
 pk.onclick=async()=>{if(!window.showDirectoryPicker){toast("Este navegador no permite elegir la carpeta. Usa Chrome, Edge u Opera, o abre la web desde GitHub.");return}
 try{let ok=false;if(ROOT){try{ok=(await ROOT.requestPermission({mode:"read"}))==="granted"}catch(e){}}
 if(!ok){ROOT=await showDirectoryPicker({id:"isa-web",mode:"read"});hSet(ROOT)}
-pk.hidden=true;for(const k in SIG)delete SIG[k];scan()}catch(e){}}}
+pk.hidden=true;for(const k in SIG)delete SIG[k];scan();prepararAudio()}catch(e){}}}
 async function dirList(id){try{const r=await fetch(DIR[id]+"/",{cache:"no-store"});if(!r.ok)return null;const h=await r.text();return[...h.matchAll(/href="([^"?#]+)"/g)].map(m=>{try{return decodeURIComponent(m[1])}catch(e){return m[1]}}).map(x=>x.replace(/^.*\//,"")).filter(Boolean).map(name=>({name}))}catch(e){return null}}
 const pick=a=>a.find(x=>/^carta\./i.test(x.name))||a[0];
 async function loadCarta(f){const t=await readText("carta",{f});
@@ -555,7 +550,7 @@ else{b.innerHTML=`<div class="cs2"><div id="cl"><button class="env" id="env2" ar
 $("#env2").onclick=()=>{$("#cl").style.display="none";$("#pp").classList.add("on");burst2()}}}
 const v=$("#vw");if(!v.open)v.showModal();const m=b.querySelector("video");if(m)m.play().catch(()=>{});
 if(VL&&nn>1)[1,-1].forEach(k=>{const x=VL.l[(VI+k+nn)%nn];if(x&&kindOf(x.f||x.u)==="img")new Image().src=srcOf(VL.id,x)})}
-(LOCAL?initLocal():Promise.resolve()).then(scan);setInterval(()=>{if(!document.hidden)scan()},30000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)scan()});
+(LOCAL?initLocal():Promise.resolve()).then(()=>{scan();prepararAudio()});setInterval(()=>{if(!document.hidden)scan()},30000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)scan()});
 function burst(){const r=$("#cake").getBoundingClientRect();for(let n=0;n<56;n++){const s=document.createElement("i");s.className="cf";s.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+40}px;background:${C[n%6]}`;document.body.appendChild(s);const a=Math.random()*6.283,d=80+Math.random()*190;s.animate([{transform:"translate(0,0) rotate(0)",opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d+150}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1200+Math.random()*900,easing:"cubic-bezier(.2,.7,.4,1)"}).onfinish=()=>s.remove()}}
 let out=false;$("#cake").onclick=()=>{out=!out;$("#cake").classList.toggle("out",out);$("#wish").textContent=out?"Deseo pedido":"Pedí un deseo";if(out)burst()};
 /* Confeti al abrir la web: lluvia por toda la pantalla y dos cañones desde las esquinas de abajo */
@@ -586,23 +581,31 @@ function cuenta(){
  box.innerHTML=`<p class="cdl">Faltan para el 21 de diciembre</p><div class="cdr">${v.map((x,i)=>`<div class="cdc2"><b>${i?z(x):x}</b><span>${L[i]}</span></div>`).join("")}</div>`;
 }
 cuenta();setInterval(cuenta,1000);
-/* Reproductor de YouTube: la reproducción comienza únicamente al tocar Play */
-let ytPlayer=null,ytReady=false,ytPlaying=false;
-function onYouTubeIframeAPIReady(){
- ytReady=true;
- ytPlayer=new YT.Player("yt-player",{height:"1",width:"1",videoId:"BSvp-LZlavk",playerVars:{playsinline:1,controls:0,rel:0},events:{
-  onReady:()=>{},
-  onStateChange:e=>{ytPlaying=e.data===YT.PlayerState.PLAYING;actualizaMusica()}
- }});
+/* Reproductor local: colocar el archivo MP3 en audio/cancion.mp3 */
+const audioPlayer=$("#site-audio"),musicStatus=$("#music-status"),musicButton=$("#music-toggle");
+let audioObjectUrl=null;
+function estadoMusica(t){if(musicStatus)musicStatus.textContent=t}
+function actualizaMusica(){const playing=!audioPlayer.paused&&!audioPlayer.ended;$("#music-icon").textContent=playing?"Ⅱ":"▶";musicButton.setAttribute("aria-label",playing?"Pausar canción":"Reproducir canción");musicButton.title=playing?"Pausar":"Reproducir"}
+async function prepararAudio(){
+ audioPlayer.pause();audioPlayer.removeAttribute("src");audioPlayer.load();
+ if(LOCAL){
+  if(!ROOT){estadoMusica("Conectá la carpeta de la web para cargar el MP3");return}
+  try{const dir=await ROOT.getDirectoryHandle("audio"),handle=await dir.getFileHandle("cancion.mp3"),file=await handle.getFile();if(audioObjectUrl)URL.revokeObjectURL(audioObjectUrl);audioObjectUrl=URL.createObjectURL(file);audioPlayer.src=audioObjectUrl;estadoMusica("MP3 listo para reproducir");return}
+  catch(e){estadoMusica("Agregá audio/cancion.mp3 a la carpeta de la web");return}
+ }
+ audioPlayer.src="audio/cancion.mp3";estadoMusica("Cargando archivo de audio…");
 }
-function actualizaMusica(){
- const b=$("#music-toggle"),i=$("#music-icon");if(!b||!i)return;
- i.textContent=ytPlaying?"Ⅱ":"▶";b.setAttribute("aria-label",ytPlaying?"Pausar canción":"Reproducir canción");b.title=ytPlaying?"Pausar":"Reproducir";
-}
-$("#music-toggle").addEventListener("click",()=>{
- if(!ytReady||!ytPlayer){const b=$("#music-toggle");b.title="Cargando canción…";return}
- if(ytPlaying)ytPlayer.pauseVideo();else ytPlayer.playVideo();
+audioPlayer.addEventListener("canplay",()=>estadoMusica("Lista para reproducir"));
+audioPlayer.addEventListener("playing",()=>{estadoMusica("Reproduciendo");actualizaMusica()});
+audioPlayer.addEventListener("pause",()=>{if(!audioPlayer.ended)estadoMusica("En pausa");actualizaMusica()});
+audioPlayer.addEventListener("ended",()=>{estadoMusica("Canción finalizada");actualizaMusica()});
+audioPlayer.addEventListener("error",()=>estadoMusica("No se encontró el MP3. Revisá audio/cancion.mp3"));
+musicButton.addEventListener("click",async()=>{
+ if(!audioPlayer.src){await prepararAudio();if(!audioPlayer.src)return}
+ if(audioPlayer.paused){try{await audioPlayer.play()}catch(e){estadoMusica("No se pudo reproducir. Comprobá que el MP3 sea válido")}}
+ else audioPlayer.pause();actualizaMusica();
 });
+
 function burst2(){const r=$("#lf").getBoundingClientRect();for(let n=0;n<40;n++){const s=document.createElement("i");s.className="cf";s.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+20}px;background:${C[n%6]}`;document.body.appendChild(s);s.animate([{transform:"translate(0,0) rotate(0)",opacity:1},{transform:`translate(${(Math.random()-.5)*r.width}px,${r.height*.8}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1600+Math.random()*1200,easing:"ease-in"}).onfinish=()=>s.remove()}}
 function clk(){const d=new Date();$("#clk").innerHTML=d.toLocaleTimeString("es",{hour:"2-digit",minute:"2-digit"})+"<br>"+d.toLocaleDateString("es",{day:"numeric",month:"numeric",year:"numeric"})}
 clk();setInterval(clk,30000);

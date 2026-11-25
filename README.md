@@ -9,6 +9,7 @@ Web de cumpleaños con diseño estilo Windows 11. Cada sección es una **carpeta
 | Videos | Los videos | `videos/` |
 | Dedicatorias | Las dedicatorias (archivos `.txt`) | `dedicatorias/` |
 | Carta especial | Muestra directamente el sobre; al tocarlo, la carta se abre en pantalla completa (`carta.txt`) | `carta-especial/` |
+| Audio | Canción de fondo del reproductor de Inicio | `audio/` |
 
 Ya no hace falta ningún `lista.json`: la web lee sola los archivos de cada carpeta. En la página no existe la opción de subir archivos: solo se muestra lo que está guardado en las carpetas.
 
@@ -19,7 +20,11 @@ fotos/          tus fotos y videos
 videos/         tus videos
 dedicatorias/   archivos .txt
 carta-especial/ carta.txt
+audio/          cancion.mp3
 ```
+
+## Música del inicio
+Coloca el archivo MP3 dentro de `audio/` con el nombre exacto `cancion.mp3` (`audio/cancion.mp3`). El reproductor de la pantalla de Inicio lo reproduce directamente en la web con los botones de Play y Pausa; ya no utiliza YouTube. No hace falta activar reproducción automática: el visitante toca Play para iniciar.
 
 ## Cómo agregar archivos
 Solo sube el archivo a su carpeta (por ejemplo, `fotos/foto1.jpg`). Aparece solo, ordenado por nombre, y el nombre que se ve sale del archivo (`con-las-amigas.jpg` → "Con las amigas").
@@ -48,7 +53,7 @@ Funciona en Chrome, Edge y Opera.
 Aquí no hay que dar ningún permiso: la web lee las carpetas del repositorio y se actualiza sola. El repositorio debe tener las carpetas con tus archivos (`fotos/foto1.jpg`, no solo `index.html`) y el `index.html` de esta versión. Al subir, usa "Add file > Upload files" y arrastra las carpetas completas. Pasados 1 o 2 minutos aparecen solas.
 
 ## De dónde sale el contenido
-Todo lo que se ve sale únicamente de los archivos que están dentro de cada carpeta (`fotos/`, `videos/`, `dedicatorias/`, `carta-especial/`). La web ya no trae textos ni fotos de ejemplo guardados dentro de `index.html`: si borras `carta.txt` o `para-isa.txt`, dejan de verse.
+Todo lo que se ve sale únicamente de los archivos que están dentro de cada carpeta (`fotos/`, `videos/`, `dedicatorias/`, `carta-especial/` y `audio/`). La web ya no trae textos ni fotos de ejemplo guardados dentro de `index.html`: si borras `carta.txt` o `para-isa.txt`, dejan de verse.
 
 ## Cambiar de foto o video sin cerrar el visor
 Al abrir una foto o un video puedes pasar al siguiente o al anterior con las flechas ← → del teclado, con los botones ‹ › a los lados, o deslizando el dedo (o el mouse) hacia la izquierda o la derecha. Al llegar al final vuelve al principio.

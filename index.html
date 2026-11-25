@@ -230,6 +230,89 @@ html, body, *, *::before, *::after { scrollbar-width: none; }
   .fl { grid-template-columns:repeat(auto-fill,minmax(125px,1fr)); }
 }
 
+
+/* Compatibilidad específica con Safari en iPhone y iPad */
+html {
+  min-height: 100%;
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  overscroll-behavior: none;
+}
+.desk {
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+  min-height: 0;
+}
+.area { min-height: 0; min-width: 0; }
+.win { min-height: 0; }
+.pane {
+  min-height: 0;
+  flex: 1 1 0%;
+  -webkit-overflow-scrolling: touch;
+}
+.home {
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+img, video { -webkit-user-drag: none; }
+button, .fo, .di, .tab, .ti {
+  touch-action: manipulation;
+}
+@supports (-webkit-touch-callout: none) {
+  .desk {
+    height: -webkit-fill-available;
+    height: 100svh;
+    height: 100dvh;
+  }
+  .win, .win.max {
+    max-height: 100%;
+    min-height: 0;
+  }
+  .win .pane {
+    flex: 1 1 0%;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tb, .tk {
+    flex-shrink: 0;
+  }
+  .tk {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  #lf {
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  dialog {
+    max-height: 90svh;
+    max-height: 90dvh;
+  }
+}
+@media (max-width: 760px) {
+  .desk {
+    height: 100vh;
+    height: 100svh;
+    height: 100dvh;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .area { height: 100%; }
+  .win, .win.max {
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+  }
+  .win .pane { min-height: 0; flex: 1 1 0%; }
+  .tk { flex: 0 0 auto; }
+}
+
 </style>
 </head>
 <body>
@@ -257,7 +340,7 @@ html, body, *, *::before, *::after { scrollbar-width: none; }
 <g class="flame" style="animation-delay:.15s"><path d="M110.500 60c-7-9 0-14 0-22 7 8 7 14 0 22z" fill="#ff9f1c"/><path d="M110.500 58c-3-4 0-7 0-10 3 3 3 6 0 10z" fill="#ffe14d"/></g>
 <g class="flame" style="animation-delay:.3s"><path d="M132.500 60c-7-9 0-14 0-22 7 8 7 14 0 22z" fill="#ff9f1c"/><path d="M132.500 58c-3-4 0-7 0-10 3 3 3 6 0 10z" fill="#ffe14d"/></g>
 </svg>
-<p class="wish" id="wish">Toca el pastel y sopla las velas</p>
+<p class="wish" id="wish">Pedí un deseo</p>
 </div>
 </div>
 </div>
@@ -375,7 +458,7 @@ $("#env2").onclick=()=>{$("#cl").style.display="none";$("#pp").classList.add("on
 const v=$("#vw");if(!v.open)v.showModal();const m=b.querySelector("video");if(m)m.play().catch(()=>{})}
 (LOCAL?initLocal():Promise.resolve()).then(scan);setInterval(()=>{if(!document.hidden)scan()},30000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)scan()});
 function burst(){const r=$("#cake").getBoundingClientRect();for(let n=0;n<56;n++){const s=document.createElement("i");s.className="cf";s.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+40}px;background:${C[n%6]}`;document.body.appendChild(s);const a=Math.random()*6.283,d=80+Math.random()*190;s.animate([{transform:"translate(0,0) rotate(0)",opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d+150}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1200+Math.random()*900,easing:"cubic-bezier(.2,.7,.4,1)"}).onfinish=()=>s.remove()}}
-let out=false;$("#cake").onclick=()=>{out=!out;$("#cake").classList.toggle("out",out);$("#wish").textContent=out?"Deseo pedido. ¡Que se cumpla!":"Toca el pastel y sopla las velas";if(out)burst()};
+let out=false;$("#cake").onclick=()=>{out=!out;$("#cake").classList.toggle("out",out);$("#wish").textContent=out?"Deseo pedido":"Pedí un deseo";if(out)burst()};
 function burst2(){const r=$("#lf").getBoundingClientRect();for(let n=0;n<40;n++){const s=document.createElement("i");s.className="cf";s.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+20}px;background:${C[n%6]}`;document.body.appendChild(s);s.animate([{transform:"translate(0,0) rotate(0)",opacity:1},{transform:`translate(${(Math.random()-.5)*r.width}px,${r.height*.8}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1600+Math.random()*1200,easing:"ease-in"}).onfinish=()=>s.remove()}}
 function clk(){const d=new Date();$("#clk").innerHTML=d.toLocaleTimeString("es",{hour:"2-digit",minute:"2-digit"})+"<br>"+d.toLocaleDateString("es",{day:"numeric",month:"numeric",year:"numeric"})}
 clk();setInterval(clk,30000);

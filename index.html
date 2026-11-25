@@ -363,9 +363,9 @@ if(!L.length)g.innerHTML=`<div class="em">${ic(id==="fotos"?"photo":id==="videos
 L.forEach((it,k)=>{const b=document.createElement("button"),u=srcOf(id,it);b.className="fo";
 const vd=kindOf(it.f||it.u)==="vid";
 b.innerHTML=(id==="fotos"||id==="videos"?(vd?`<div class="th ph vd" style="--h:${(k*67+250)%360}">${u?`<video src="${esc(u)}#t=0.5" preload="metadata" muted playsinline></video>`:""}<span class="pl">${ic("play")}</span></div>`:`<div class="th ph">${u?`<img src="${esc(u)}" alt="" loading="lazy">`:ic("photo")}</div>`):`<div class="th doc">${ic(id==="carta"?"mail":"note")}</div>`)+"<b></b>";
-b.lastChild.textContent=it.n;b.onclick=()=>view(id,it);g.appendChild(b);const im=b.querySelector("img");if(im){let r=0;im.onerror=()=>{if(r++<20)setTimeout(()=>{im.src=u+(u.includes("?")?"&":"?")+"r="+r},6000)}}});
+if(id!=="fotos"&&id!=="videos")b.lastChild.textContent=it.n;b.onclick=()=>view(id,it);g.appendChild(b);const im=b.querySelector("img");if(im){let r=0;im.onerror=()=>{if(r++<20)setTimeout(()=>{im.src=u+(u.includes("?")?"&":"?")+"r="+r},6000)}}});
 $("#st-"+id).textContent=L.length+(L.length===1?" elemento":" elementos")}
-async function view(id,it){const u=srcOf(id,it),b=$("#vb");$("#vt").textContent=it.n;b.innerHTML="";
+async function view(id,it){const u=srcOf(id,it),b=$("#vb");$("#vt").textContent=(id==="fotos"||id==="videos")?"":it.n;b.innerHTML="";
 if(id==="fotos"||id==="videos"){if(kindOf(it.f||it.u)==="vid")b.innerHTML=u?`<video src="${esc(u)}" controls playsinline></video>`:`<p class="mu">Este video aún no está disponible.</p>`;else b.innerHTML=u?`<img src="${esc(u)}" alt="">`:`<p class="mu">Esta foto aún no está disponible.</p>`}
 else{let t=it.t;if(t==null&&u){t=await readText(id,it);if(t==null)t=""}
 const P=String(t||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean),sg=x=>x.startsWith("—");

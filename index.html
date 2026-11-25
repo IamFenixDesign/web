@@ -160,6 +160,76 @@ dialog video{display:block;width:100%;max-height:70vh;background:#000}
 #vb video{display:block;width:100%;max-height:68vh;border-radius:8px;background:#000}
 .cs2{display:grid;place-items:center;text-align:center;padding:10px 0}
 .wg{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+
+/* Adaptación móvil/tablet y ocultar barras de desplazamiento */
+html, body, *, *::before, *::after { scrollbar-width: none; }
+*::-webkit-scrollbar { width: 0 !important; height: 0 !important; display: none !important; }
+.pane, .home, #lf, #vb { -ms-overflow-style: none; scrollbar-width: none; }
+.pane, .home, #lf, #vb { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+
+@media (min-width:761px) and (max-width:1100px) {
+  .win { width:min(900px,calc(100% - 24px)); }
+  .pane { padding:22px; }
+  .fl { grid-template-columns:repeat(auto-fill,minmax(135px,1fr)); gap:10px; }
+  .di { width:82px; }
+}
+@media (max-width:760px) {
+  .desk { padding:env(safe-area-inset-top,0px) 0 0; grid-template-rows:minmax(0,1fr) auto; }
+  .area { min-height:0; overflow:hidden; }
+  .win, .win.max { left:0!important; top:0!important; width:100%!important; height:100%!important; max-height:100%!important; border-radius:0; border-left:0; border-right:0; }
+  .tb { min-height:44px; height:44px; padding-left:8px; gap:4px; }
+  .tt { font-size:.8rem; gap:6px; }
+  .wc button { width:38px; height:36px; }
+  .tabs { overflow-x:auto; scrollbar-width:none; }
+  .tab { flex:0 0 auto; height:40px; padding:0 10px; }
+  .tab:not(.on) span { display:inline; }
+  .tab { font-size:.78rem; gap:5px; }
+  .pane { flex:1 1 auto; min-height:0; overflow-y:auto; overflow-x:hidden; padding:16px 14px calc(20px + env(safe-area-inset-bottom,0px)); }
+  .home { overflow-y:auto; padding-bottom:12px; }
+  .homei { padding:28px 14px 18px; }
+  .hero { grid-template-columns:minmax(0,1fr); gap:8px; }
+  .ht { text-align:center; }
+  h1 { font-size:clamp(2rem,9vw,3.2rem); }
+  h1 b { font-size:clamp(4rem,20vw,6.5rem); }
+  .cw { order:initial; }
+  #cake { width:min(58vw,210px); max-height:30vh; }
+  .sub { font-size:.95rem; margin:10px auto 0; }
+  .wg { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .w { padding:10px; gap:8px; min-width:0; }
+  .w .bx { width:38px; height:38px; font-size:19px; }
+  .w b { font-size:.88rem; }
+  .w small { font-size:.72rem; }
+  .fl { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+  .fo { padding:6px 6px 0; min-width:0; }
+  .th.ph, .th.vd, .th.doc { width:100%; }
+  .fo b { font-size:.82rem; }
+  .di { width:70px; padding:6px 2px; font-size:.7rem; }
+  .icons { gap:2px; }
+  .tk { height:54px; min-height:54px; margin:0; padding:0 8px calc(env(safe-area-inset-bottom,0px)); justify-content:space-evenly; }
+  .ti { width:42px; height:42px; font-size:20px; }
+  .sr, .tray { display:none; }
+  #lf { padding:64px 12px calc(20px + env(safe-area-inset-bottom,0px)); }
+  #lf .paper { font-size:1.35rem; line-height:1.55; }
+  #pick { bottom:calc(66px + env(safe-area-inset-bottom,0px)); }
+  dialog { width:calc(100vw - 20px); max-height:90dvh; overflow:auto; }
+  #vb { max-height:calc(90dvh - 60px); }
+  #vb img, #vb video { max-height:65dvh; }
+}
+@media (max-width:380px) {
+  .tab { padding:0 7px; font-size:.72rem; }
+  .tab .ic { font-size:14px; }
+  .fl { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .wg { grid-template-columns:1fr; }
+  .w { padding:9px; }
+}
+@media (orientation:landscape) and (max-height:520px) and (max-width:950px) {
+  .pane { padding:10px 14px; }
+  .hero { grid-template-columns:1fr 180px; }
+  #cake { width:145px; }
+  .ht { text-align:left; }
+  .fl { grid-template-columns:repeat(auto-fill,minmax(125px,1fr)); }
+}
+
 </style>
 </head>
 <body>
@@ -191,8 +261,8 @@ dialog video{display:block;width:100%;max-height:70vh;background:#000}
 </div>
 </div>
 </div>
-<div id="c-fotos"><h2>Fotos</h2><p class="mu">Momentos para recordar.</p><div class="fl" id="fl-fotos"></div><div class="stb" id="st-fotos"></div></div>
-<div id="c-videos"><h2>Videos</h2><p class="mu">Recuerdos para ver y volver a ver.</p><div class="fl" id="fl-videos"></div><div class="stb" id="st-videos"></div></div>
+<div id="c-fotos"><div class="fl" id="fl-fotos"></div><div class="stb" id="st-fotos"></div></div>
+<div id="c-videos"><div class="fl" id="fl-videos"></div><div class="stb" id="st-videos"></div></div>
 <div id="c-dedicatorias"><h2>Dedicatorias</h2><p class="mu">Unas palabras solo para ti.</p><div class="fl" id="fl-dedicatorias"></div><div class="stb" id="st-dedicatorias"></div></div>
 <div id="c-carta"><h2>Carta especial</h2><p class="mu">Una carta escrita con cariño.</p><div id="carta-box"></div></div>
 </div>

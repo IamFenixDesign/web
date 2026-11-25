@@ -155,7 +155,15 @@ dialog video{display:block;width:100%;max-height:70vh;background:#000}
 .em{grid-column:1/-1;display:grid;place-items:center;gap:6px;padding:34px 12px;text-align:center;color:var(--mu)}
 .em .ic{font-size:44px;color:var(--acc)}.em b{color:var(--tx);font-size:1.05rem}
 .stb{margin-top:16px;padding-top:10px;border-top:1px solid var(--bd);font-size:.78rem;color:var(--mu)}
-#vb{padding:6px 16px 18px;max-height:calc(90vh - 60px);overflow:auto}
+#vs{position:relative}
+#vb{padding:6px 16px 18px;max-height:calc(90vh - 60px);overflow:auto;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+#vb img{-webkit-user-drag:none}
+.vn{position:absolute;top:50%;z-index:2;transform:translateY(-50%);width:42px;height:42px;border:0;border-radius:50%;background:rgba(0,0,0,.52);color:#fff;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .15s}
+.vn:hover{background:rgba(0,0,0,.75)}.vn[hidden]{display:none}
+#vp{left:10px}#vn{right:10px}
+#vb.vsl{animation:vsl .28s ease}#vb.vsr{animation:vsr .28s ease}
+@keyframes vsl{from{opacity:0;transform:translateX(44px)}}
+@keyframes vsr{from{opacity:0;transform:translateX(-44px)}}
 #vb img{display:block;max-width:100%;max-height:72vh;margin:0 auto;border-radius:8px}
 #vb video{display:block;width:100%;max-height:68vh;border-radius:8px;background:#000}
 .cs2{display:grid;place-items:center;text-align:center;padding:10px 0}
@@ -349,7 +357,7 @@ button, .fo, .di, .tab, .ti {
 <div id="c-dedicatorias"><h2>Dedicatorias</h2><p class="mu">Unas palabras solo para ti.</p><div class="fl" id="fl-dedicatorias"></div><div class="stb" id="st-dedicatorias"></div></div>
 <div id="c-carta"><h2>Carta especial</h2><p class="mu">Una carta escrita con cariño.</p><div id="carta-box"></div></div>
 </div>
-<dialog id="vw"><div class="dh"><b id="vt"></b><button id="vx" aria-label="Cerrar"></button></div><div id="vb"></div></dialog>
+<dialog id="vw"><div class="dh"><b id="vt"></b><button id="vx" aria-label="Cerrar"></button></div><div id="vs"><button class="vn" id="vp" aria-label="Anterior" hidden></button><div id="vb"></div><button class="vn" id="vn" aria-label="Siguiente" hidden></button></div></dialog>
 <div id="lf" hidden role="dialog" aria-modal="true" aria-label="Carta especial"><button id="lx" aria-label="Cerrar la carta"></button><div class="paper on" id="lp"></div></div>
 <button id="pick" hidden></button>
 <div class="toast" id="toast"></div>
@@ -389,7 +397,18 @@ function tog(id){if(id==="inicio")return desk();const w=F[id];if(w.classList.con
 document.addEventListener("click",e=>{const a=e.target.closest("[data-a]");if(a){const id=a.closest(".win").id.slice(2),k=a.dataset.a;if(k==="x")closeW(id);else if(k==="min")mini(id);else F[id].classList.toggle("max");return}const o=e.target.closest("[data-o]");if(o){o.classList.contains("ti")?tog(o.dataset.o):openW(o.dataset.o)}});
 window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(F[h])openW(h)});
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),2600)}
-$("#vx").onclick=()=>$("#vw").close();$("#vw").onclose=()=>{$("#vb").innerHTML=""};
+let VL=null,VI=0;
+$("#vx").onclick=()=>$("#vw").close();$("#vw").onclose=()=>{$("#vb").innerHTML="";VL=null};
+/* Cambiar de foto o video: flechas del teclado, botones y deslizar */
+const CH=d=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+$("#vp").innerHTML=CH("M15 5l-7 7 7 7");$("#vn").innerHTML=CH("M9 5l7 7-7 7");
+function go(d){if(!VL||VL.l.length<2)return;const n=VL.l.length;VI=(VI+d+n)%n;view(VL.id,VL.l[VI],d)}
+$("#vp").onclick=()=>go(-1);$("#vn").onclick=()=>go(1);
+document.addEventListener("keydown",e=>{if(!$("#vw").open||!VL||e.target.tagName==="VIDEO")return;if(e.key==="ArrowRight"){e.preventDefault();go(1)}else if(e.key==="ArrowLeft"){e.preventDefault();go(-1)}});
+{let gx=0,gy=0,gt=0,gok=false;const vb=$("#vb");
+vb.addEventListener("pointerdown",e=>{gok=!!VL&&VL.l.length>1;if(e.target.tagName==="VIDEO"&&e.clientY>e.target.getBoundingClientRect().bottom-56)gok=false;gx=e.clientX;gy=e.clientY;gt=Date.now()});
+vb.addEventListener("pointerup",e=>{if(!gok)return;gok=false;const dx=e.clientX-gx,dy=e.clientY-gy;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5&&Date.now()-gt<900)go(dx<0?1:-1)});
+vb.addEventListener("pointercancel",()=>{gok=false})}
 const D={},esc=x=>String(x).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 const srcOf=(id,it)=>it.u||(it.f?DIR[id]+"/"+encodeURIComponent(it.f):"");
 /* Repositorio de GitHub: se deduce de la dirección de la web (usuario.github.io/repo) */
@@ -448,14 +467,18 @@ const vd=kindOf(it.f||it.u)==="vid";
 b.innerHTML=(id==="fotos"||id==="videos"?(vd?`<div class="th ph vd" style="--h:${(k*67+250)%360}">${u?`<video src="${esc(u)}#t=0.5" preload="metadata" muted playsinline></video>`:""}<span class="pl">${ic("play")}</span></div>`:`<div class="th ph">${u?`<img src="${esc(u)}" alt="" loading="lazy">`:ic("photo")}</div>`):`<div class="th doc">${ic(id==="carta"?"mail":"note")}</div>`)+"<b></b>";
 if(id!=="fotos"&&id!=="videos")b.lastChild.textContent=it.n;b.onclick=()=>view(id,it);g.appendChild(b);const im=b.querySelector("img");if(im){let r=0;im.onerror=()=>{if(r++<20)setTimeout(()=>{im.src=u+(u.includes("?")?"&":"?")+"r="+r},6000)}}});
 $("#st-"+id).textContent=L.length+(L.length===1?" elemento":" elementos")}
-async function view(id,it){const u=srcOf(id,it),b=$("#vb");$("#vt").textContent=(id==="fotos"||id==="videos")?"":it.n;b.innerHTML="";
+async function view(id,it,dir){const u=srcOf(id,it),b=$("#vb"),med=id==="fotos"||id==="videos";
+if(med){if(!(VL&&VL.id===id&&VL.l.includes(it)))VL={id,l:(D[id]||[]).slice()};VI=Math.max(0,VL.l.indexOf(it))}else VL=null;
+const nn=VL?VL.l.length:0;$("#vp").hidden=$("#vn").hidden=nn<2;
+$("#vt").textContent=med?(nn>1?`${VI+1} / ${nn}`:""):it.n;b.innerHTML="";b.classList.remove("vsl","vsr");if(dir){void b.offsetWidth;b.classList.add(dir>0?"vsl":"vsr")}
 if(id==="fotos"||id==="videos"){if(kindOf(it.f||it.u)==="vid")b.innerHTML=u?`<video src="${esc(u)}" controls playsinline></video>`:`<p class="mu">Este video aún no está disponible.</p>`;else b.innerHTML=u?`<img src="${esc(u)}" alt="">`:`<p class="mu">Esta foto aún no está disponible.</p>`}
 else{let t=it.t;if(t==null&&u){t=await readText(id,it);if(t==null)t=""}
 const P=String(t||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean),sg=x=>x.startsWith("—");
 if(id==="dedicatorias")b.innerHTML=`<article class="note card">${ic("heart")}<h3>${esc(it.n)}</h3>${P.map(p=>sg(p)?`<div class="sig">${esc(p.replace(/^—\s*/,""))}</div>`:`<p>${esc(p)}</p>`).join("")}</article>`;
 else{b.innerHTML=`<div class="cs2"><div id="cl"><button class="env" id="env2" aria-label="Abrir la carta"><span class="seal">${ic("heart")}</span></button><p class="hint">Toca el sobre para abrir tu carta</p></div><div class="paper" id="pp">${P.map(p=>`<p${sg(p)?' style="text-align:right"':""}>${esc(p)}</p>`).join("")}</div></div>`;
 $("#env2").onclick=()=>{$("#cl").style.display="none";$("#pp").classList.add("on");burst2()}}}
-const v=$("#vw");if(!v.open)v.showModal();const m=b.querySelector("video");if(m)m.play().catch(()=>{})}
+const v=$("#vw");if(!v.open)v.showModal();const m=b.querySelector("video");if(m)m.play().catch(()=>{});
+if(VL&&nn>1)[1,-1].forEach(k=>{const x=VL.l[(VI+k+nn)%nn];if(x&&kindOf(x.f||x.u)==="img")new Image().src=srcOf(VL.id,x)})}
 (LOCAL?initLocal():Promise.resolve()).then(scan);setInterval(()=>{if(!document.hidden)scan()},30000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)scan()});
 function burst(){const r=$("#cake").getBoundingClientRect();for(let n=0;n<56;n++){const s=document.createElement("i");s.className="cf";s.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+40}px;background:${C[n%6]}`;document.body.appendChild(s);const a=Math.random()*6.283,d=80+Math.random()*190;s.animate([{transform:"translate(0,0) rotate(0)",opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d+150}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1200+Math.random()*900,easing:"cubic-bezier(.2,.7,.4,1)"}).onfinish=()=>s.remove()}}
 let out=false;$("#cake").onclick=()=>{out=!out;$("#cake").classList.toggle("out",out);$("#wish").textContent=out?"Deseo pedido":"Pedí un deseo";if(out)burst()};

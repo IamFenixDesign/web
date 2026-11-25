@@ -57,3 +57,6 @@ Las fotos y los videos siempre se abren en pantalla completa, con la imagen ente
 ## Combinación de la carta especial
 Al tocar el sobre se pide una combinación de 8 números. Solo con la correcta se abre la carta; si se falla, el teclado se sacude y se puede volver a intentar. Se pide cada vez que se toca el sobre. Se puede escribir con el teclado numérico o con los botones en pantalla.
 Nota: es un candado de la experiencia, no una protección real. El archivo `carta-especial/carta.txt` sigue siendo público en el repositorio de GitHub, así que quien lo busque ahí puede leerlo sin la combinación.
+
+## Confeti al abrir la web
+Al abrir la web cae confeti por toda la pantalla y salen dos cañones desde las esquinas de abajo. Dura unos 7 segundos y se limpia solo. Al tocar el pastel sale otra ráfaga.

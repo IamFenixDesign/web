@@ -60,3 +60,6 @@ Nota: es un candado de la experiencia, no una protección real. El archivo `cart
 
 ## Confeti al abrir la web
 Al abrir la web cae confeti por toda la pantalla y salen dos cañones desde las esquinas de abajo. Dura unos 7 segundos y se limpia solo. Al tocar el pastel sale otra ráfaga.
+
+## Cuenta regresiva al 21 de diciembre
+En la pantalla de inicio, bajo el saludo, hay una cuenta regresiva (días, horas, minutos y segundos) hasta el 21 de diciembre a las 00:00, con la hora del dispositivo de quien mira la web. Ese día el contador se reemplaza por "¡Hoy es el gran día!" y salen confetis: al abrir la web y una tanda nueva cada 9 segundos mientras siga abierta. Si la web está abierta cuando llegan las 00:00, el cambio ocurre solo. Pasado el 21, la cuenta apunta al 21 de diciembre del año siguiente.

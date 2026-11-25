@@ -161,6 +161,11 @@ dialog video{display:block;width:100%;max-height:70vh;background:#000}
 .vn{position:absolute;top:50%;z-index:2;transform:translateY(-50%);width:42px;height:42px;border:0;border-radius:50%;background:rgba(0,0,0,.52);color:#fff;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .15s}
 .vn:hover{background:rgba(0,0,0,.75)}.vn[hidden]{display:none}
 #vp{left:10px}#vn{right:10px}
+/* El fondo del visor se ajusta al tamaño de la foto o del video */
+#vw.fit{width:fit-content;min-width:min(300px,calc(100vw - 20px));max-width:calc(100vw - 20px)}
+#vw.fit #vb{padding:0 12px 12px}
+#vw.fit #vb img,#vw.fit #vb video{width:auto;height:auto;max-width:calc(100vw - 56px);max-height:calc(100vh - 130px);max-height:calc(100dvh - 130px)}
+#vw.fit #vb video{min-width:240px}
 #vb.vsl{animation:vsl .28s ease}#vb.vsr{animation:vsr .28s ease}
 @keyframes vsl{from{opacity:0;transform:translateX(44px)}}
 @keyframes vsr{from{opacity:0;transform:translateX(-44px)}}
@@ -397,7 +402,7 @@ function tog(id){if(id==="inicio")return desk();const w=F[id];if(w.classList.con
 document.addEventListener("click",e=>{const a=e.target.closest("[data-a]");if(a){const id=a.closest(".win").id.slice(2),k=a.dataset.a;if(k==="x")closeW(id);else if(k==="min")mini(id);else F[id].classList.toggle("max");return}const o=e.target.closest("[data-o]");if(o){o.classList.contains("ti")?tog(o.dataset.o):openW(o.dataset.o)}});
 window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(F[h])openW(h)});
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),2600)}
-let VL=null,VI=0;
+let VL=null,VI=0,VTK=0;
 $("#vx").onclick=()=>$("#vw").close();$("#vw").onclose=()=>{$("#vb").innerHTML="";VL=null};
 /* Cambiar de foto o video: flechas del teclado, botones y deslizar */
 const CH=d=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
@@ -470,7 +475,10 @@ $("#st-"+id).textContent=L.length+(L.length===1?" elemento":" elementos")}
 async function view(id,it,dir){const u=srcOf(id,it),b=$("#vb"),med=id==="fotos"||id==="videos";
 if(med){if(!(VL&&VL.id===id&&VL.l.includes(it)))VL={id,l:(D[id]||[]).slice()};VI=Math.max(0,VL.l.indexOf(it))}else VL=null;
 const nn=VL?VL.l.length:0;$("#vp").hidden=$("#vn").hidden=nn<2;
-$("#vt").textContent=med?(nn>1?`${VI+1} / ${nn}`:""):it.n;b.innerHTML="";b.classList.remove("vsl","vsr");if(dir){void b.offsetWidth;b.classList.add(dir>0?"vsl":"vsr")}
+const tk=++VTK;
+if(med&&u){await new Promise(r=>{const k=kindOf(it.f||it.u)==="vid",m=k?document.createElement("video"):new Image();m[k?"onloadedmetadata":"onload"]=r;m.onerror=r;if(k)m.preload="metadata";m.src=u;setTimeout(r,2500)});if(tk!==VTK)return}
+$("#vw").classList.toggle("fit",med);
+$("#vt").textContent=med?"":it.n;b.innerHTML="";b.classList.remove("vsl","vsr");if(dir){void b.offsetWidth;b.classList.add(dir>0?"vsl":"vsr")}
 if(id==="fotos"||id==="videos"){if(kindOf(it.f||it.u)==="vid")b.innerHTML=u?`<video src="${esc(u)}" controls playsinline></video>`:`<p class="mu">Este video aún no está disponible.</p>`;else b.innerHTML=u?`<img src="${esc(u)}" alt="">`:`<p class="mu">Esta foto aún no está disponible.</p>`}
 else{let t=it.t;if(t==null&&u){t=await readText(id,it);if(t==null)t=""}
 const P=String(t||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean),sg=x=>x.startsWith("—");

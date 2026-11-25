@@ -51,4 +51,5 @@ Aquí no hay que dar ningún permiso: la web lee las carpetas del repositorio y 
 Todo lo que se ve sale únicamente de los archivos que están dentro de cada carpeta (`fotos/`, `videos/`, `dedicatorias/`, `carta-especial/`). La web ya no trae textos ni fotos de ejemplo guardados dentro de `index.html`: si borras `carta.txt` o `para-isa.txt`, dejan de verse.
 
 ## Cambiar de foto o video sin cerrar el visor
-Al abrir una foto o un video puedes pasar al siguiente o al anterior con las flechas ← → del teclado, con los botones ‹ › a los lados, o deslizando el dedo (o el mouse) hacia la izquierda o la derecha. Arriba se ve el contador (por ejemplo "3 / 43") y al llegar al final vuelve al principio.
+Al abrir una foto o un video puedes pasar al siguiente o al anterior con las flechas ← → del teclado, con los botones ‹ › a los lados, o deslizando el dedo (o el mouse) hacia la izquierda o la derecha. Al llegar al final vuelve al principio.
+El fondo del visor se ajusta solo al tamaño de cada foto o video: una foto vertical abre un visor angosto y una horizontal uno ancho.

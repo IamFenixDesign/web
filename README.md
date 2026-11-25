@@ -52,4 +52,8 @@ Todo lo que se ve sale únicamente de los archivos que están dentro de cada car
 
 ## Cambiar de foto o video sin cerrar el visor
 Al abrir una foto o un video puedes pasar al siguiente o al anterior con las flechas ← → del teclado, con los botones ‹ › a los lados, o deslizando el dedo (o el mouse) hacia la izquierda o la derecha. Al llegar al final vuelve al principio.
-El fondo del visor se ajusta solo al tamaño de cada foto o video: una foto vertical abre un visor angosto y una horizontal uno ancho.
+Las fotos y los videos siempre se abren en pantalla completa, con la imagen entera visible sobre fondo oscuro. Se cierran con la ✕ de arriba a la derecha o con Esc.
+
+## Combinación de la carta especial
+Al tocar el sobre se pide una combinación de 8 números. Solo con la correcta se abre la carta; si se falla, el teclado se sacude y se puede volver a intentar. Se pide cada vez que se toca el sobre. Se puede escribir con el teclado numérico o con los botones en pantalla.
+Nota: es un candado de la experiencia, no una protección real. El archivo `carta-especial/carta.txt` sigue siendo público en el repositorio de GitHub, así que quien lo busque ahí puede leerlo sin la combinación.

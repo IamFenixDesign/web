@@ -161,11 +161,39 @@ dialog video{display:block;width:100%;max-height:70vh;background:#000}
 .vn{position:absolute;top:50%;z-index:2;transform:translateY(-50%);width:42px;height:42px;border:0;border-radius:50%;background:rgba(0,0,0,.52);color:#fff;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .15s}
 .vn:hover{background:rgba(0,0,0,.75)}.vn[hidden]{display:none}
 #vp{left:10px}#vn{right:10px}
-/* El fondo del visor se ajusta al tamaño de la foto o del video */
-#vw.fit{width:fit-content;min-width:min(300px,calc(100vw - 20px));max-width:calc(100vw - 20px)}
-#vw.fit #vb{padding:0 12px 12px}
-#vw.fit #vb img,#vw.fit #vb video{width:auto;height:auto;max-width:calc(100vw - 56px);max-height:calc(100vh - 130px);max-height:calc(100dvh - 130px)}
-#vw.fit #vb video{min-width:240px}
+/* Combinación para abrir la carta */
+#cd{position:fixed;inset:0;z-index:75;display:grid;place-items:center;padding:16px;background:rgba(10,8,30,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:vsl .25s ease}
+#cd[hidden]{display:none}
+.cdc{position:relative;width:min(330px,100%);padding:26px 20px 20px;text-align:center;background:var(--pane);color:var(--tx);border:1px solid var(--bd);border-radius:18px;box-shadow:var(--sh);-webkit-user-select:none;user-select:none}
+.cdc h2{margin:6px 0 2px;font-size:1.25rem}
+.cdm{margin:0 0 16px;font-size:.88rem;color:var(--mu);min-height:1.3em}
+.cdm.err{color:#ff5d6c}
+.cdi{display:grid;place-items:center;width:52px;height:52px;margin:0 auto;border-radius:50%;background:var(--tab);color:var(--acc);font-size:26px}
+.cdx{position:absolute;top:10px;right:10px;width:34px;height:34px;border:0;border-radius:8px;background:transparent;color:var(--tx);display:grid;place-items:center;font-size:16px}
+.cdx:hover{background:var(--tab)}
+.cdd{display:flex;justify-content:center;gap:9px;margin-bottom:18px}
+.cdd i{width:13px;height:13px;border-radius:50%;border:2px solid var(--mu);transition:background .12s,border-color .12s,transform .12s}
+.cdd i.on{background:var(--acc);border-color:var(--acc);transform:scale(1.1)}
+.cdd.err i{border-color:#ff5d6c;background:#ff5d6c}
+.cdd.err{animation:cshake .42s}
+@keyframes cshake{20%,60%{transform:translateX(-9px)}40%,80%{transform:translateX(9px)}}
+.cdk{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cdk button{height:52px;border:0;border-radius:12px;background:var(--tab);color:var(--tx);font-size:1.3rem;font-weight:600;display:grid;place-items:center;cursor:pointer}
+.cdk button:hover{background:var(--bd)}.cdk button:active{transform:scale(.96)}
+.cdk .sp{visibility:hidden}
+/* Fotos y videos siempre en pantalla completa */
+#vw.fit{position:fixed;inset:0;margin:0;width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;border:0;border-radius:0;padding:0;overflow:hidden;background:#050410;color:#fff}
+#vw.fit::backdrop{background:#050410}
+#vw.fit .dh{position:absolute;top:0;left:0;right:0;z-index:3;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 10px;justify-content:flex-end;pointer-events:none}
+#vw.fit .dh b{display:none}
+#vw.fit .dh button{pointer-events:auto;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;font-size:18px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#vw.fit .dh button:hover{background:rgba(0,0,0,.78)}
+#vw.fit #vs{position:absolute;inset:0}
+#vw.fit #vb{position:absolute;inset:0;max-height:none;padding:0;overflow:hidden;display:grid;place-items:center}
+#vw.fit #vb img,#vw.fit #vb video{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;object-fit:contain;border-radius:0;background:transparent}
+#vw.fit #vb video{background:#000}
+#vw.fit .vn{width:50px;height:50px}
+#vw.fit #vp{left:max(14px,env(safe-area-inset-left,0px))}#vw.fit #vn{right:max(14px,env(safe-area-inset-right,0px))}
 #vb.vsl{animation:vsl .28s ease}#vb.vsr{animation:vsr .28s ease}
 @keyframes vsl{from{opacity:0;transform:translateX(44px)}}
 @keyframes vsr{from{opacity:0;transform:translateX(-44px)}}
@@ -364,6 +392,7 @@ button, .fo, .di, .tab, .ti {
 </div>
 <dialog id="vw"><div class="dh"><b id="vt"></b><button id="vx" aria-label="Cerrar"></button></div><div id="vs"><button class="vn" id="vp" aria-label="Anterior" hidden></button><div id="vb"></div><button class="vn" id="vn" aria-label="Siguiente" hidden></button></div></dialog>
 <div id="lf" hidden role="dialog" aria-modal="true" aria-label="Carta especial"><button id="lx" aria-label="Cerrar la carta"></button><div class="paper on" id="lp"></div></div>
+<div id="cd" hidden role="dialog" aria-modal="true" aria-labelledby="cdt"><div class="cdc"><button class="cdx" id="cdx" aria-label="Cerrar"></button><div class="cdi" id="cdi"></div><h2 id="cdt">Carta especial</h2><p class="cdm" id="cmsg">Escribe la combinación para abrirla</p><div class="cdd" id="cdd"></div><div class="cdk" id="cdk"></div></div></div>
 <button id="pick" hidden></button>
 <div class="toast" id="toast"></div>
 <script>
@@ -461,8 +490,25 @@ function renderLetter(){const P=String(LT||"").split(/\n\s*\n/).map(x=>x.trim())
 $("#lp").innerHTML=P.map(p=>`<p${sg(p)?' style="text-align:right"':""}>${esc(p)}</p>`).join("")}
 function drawCarta(t){if(t==null){LT=null;$("#carta-box").innerHTML=`<div class="em">${ic("mail")}<b>Aún no hay carta</b><small>${LOCAL?"Conecta la carpeta de la web con el botón de abajo para ver la carta.":"Agrega un archivo carta.txt en la carpeta carta-especial y aparecerá aquí."}</small></div>`;return}LT=String(t);
 $("#carta-box").innerHTML=`<div class="cs2"><div id="cl"><button class="env" id="env2" aria-label="Abrir la carta"><span class="seal">${ic("heart")}</span></button><p class="hint">Toca el sobre para abrir tu carta</p></div></div>`;
-$("#env2").onclick=openLetter;if(!$("#lf").hidden)renderLetter()}
+$("#env2").onclick=askCode;if(!$("#lf").hidden)renderLetter()}
 function openLetter(){renderLetter();const l=$("#lf");l.hidden=false;l.scrollTop=0;$("#lx").focus();burst2()}
+/* Combinación de 8 números para abrir la carta (se guarda solo su huella, no el número) */
+I.back='<path d="M20 5H9l-6 7 6 7h11a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"/><path d="M12 9.5l4 5m0-5l-4 5"/>';
+I.lock='<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
+const h53=(t,sd=0)=>{let a=0xdeadbeef^sd,b=0x41c6ce57^sd;for(let i=0,c;i<t.length;i++){c=t.charCodeAt(i);a=Math.imul(a^c,2654435761);b=Math.imul(b^c,1597334677)}a=Math.imul(a^(a>>>16),2246822507)^Math.imul(b^(b>>>13),3266489909);b=Math.imul(b^(b>>>16),2246822507)^Math.imul(a^(a>>>13),3266489909);return 4294967296*(2097151&b)+(a>>>0)};
+const CODE_H=1139549616608077,CODE_N=8;let CB="",CBUSY=false;
+$("#cdi").innerHTML=ic("lock");$("#cdx").innerHTML=ic("x");$("#cdd").innerHTML="<i></i>".repeat(CODE_N);
+$("#cdk").innerHTML=[1,2,3,4,5,6,7,8,9].map(n=>`<button data-k="${n}">${n}</button>`).join("")+`<button class="sp" tabindex="-1" aria-hidden="true"></button><button data-k="0">0</button><button data-k="del" aria-label="Borrar">${ic("back")}</button>`;
+function cPaint(){[...$("#cdd").children].forEach((d,i)=>d.classList.toggle("on",i<CB.length))}
+function askCode(){CB="";CBUSY=false;$("#cmsg").textContent="Escribe la combinación para abrirla";$("#cmsg").classList.remove("err");$("#cdd").classList.remove("err");cPaint();$("#cd").hidden=false}
+function closeCode(){$("#cd").hidden=true;const e=$("#env2");if(e)e.focus()}
+function cPress(k){if(CBUSY)return;if(k==="del")CB=CB.slice(0,-1);else if(CB.length<CODE_N)CB+=k;cPaint();if(CB.length<CODE_N)return;
+if(h53("isa-carta:"+CB)===CODE_H){$("#cd").hidden=true;openLetter()}
+else{CBUSY=true;$("#cmsg").textContent="Combinación incorrecta";$("#cmsg").classList.add("err");const d=$("#cdd");d.classList.remove("err");void d.offsetWidth;d.classList.add("err");
+setTimeout(()=>{CB="";CBUSY=false;d.classList.remove("err");$("#cmsg").classList.remove("err");$("#cmsg").textContent="Inténtalo de nuevo";cPaint()},700)}}
+$("#cdk").addEventListener("click",e=>{const b=e.target.closest("button[data-k]");if(b)cPress(b.dataset.k)});
+$("#cdx").onclick=closeCode;$("#cd").addEventListener("click",e=>{if(e.target===$("#cd"))closeCode()});
+document.addEventListener("keydown",e=>{if($("#cd").hidden)return;if(/^\d$/.test(e.key)){e.preventDefault();cPress(e.key)}else if(e.key==="Backspace"){e.preventDefault();cPress("del")}else if(e.key==="Escape"){e.preventDefault();e.stopPropagation();closeCode()}},true);
 function closeLetter(){$("#lf").hidden=true;const e=$("#env2");if(e)e.focus()}
 $("#lx").innerHTML=ic("x");$("#lx").onclick=closeLetter;addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#lf").hidden)closeLetter()});
 function draw(id){const L=D[id],g=$("#fl-"+id);g.innerHTML="";

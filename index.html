@@ -95,7 +95,7 @@ h1 b{display:block;font-size:clamp(4rem,15vw,8rem);line-height:.95;background:li
 .w .bx{display:grid;place-items:center;width:44px;height:44px;border-radius:10px;background:var(--acc);color:#fff;font-size:22px;flex:none}
 .w b{display:block}.w small{color:var(--mu)}
 /* Mini reproductor compacto: cristal, controles en una sola línea */
-.music-card{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:12px;width:min(430px,calc(100% - 24px));margin:18px auto 6px;padding:12px 14px;border-radius:18px;background:rgba(18,14,40,.42);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 12px 32px rgba(0,0,0,.25);color:#fff}
+.music-card{position:relative;z-index:20;display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:12px;width:min(430px,calc(100% - 24px));margin:18px auto 6px;padding:12px 14px;border-radius:18px;background:rgba(18,14,40,.42);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 12px 32px rgba(0,0,0,.25);color:#fff}
 .music-info{min-width:0;display:flex;flex-direction:column;gap:3px;color:#fff}
 .music-info b{max-width:100%;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .music-info span{font-size:.7rem;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -105,7 +105,7 @@ h1 b{display:block;font-size:clamp(4rem,15vw,8rem);line-height:.95;background:li
 .music-wrap{position:relative;flex:none}
 .music-toggle{display:grid;place-items:center;width:42px;height:42px;padding:0;border:0;border-radius:50%;background:linear-gradient(135deg,#ff8fc7,#a78bfa);color:#fff;font-size:20px;box-shadow:0 5px 14px rgba(0,0,0,.25);touch-action:none}
 .music-toggle:hover{transform:scale(1.06)}
-.music-menu{position:absolute;z-index:6;bottom:calc(100% + 12px);right:0;width:min(300px,calc(100vw - 28px));max-height:min(46vh,320px);overflow:auto;padding:6px;border-radius:16px;background:rgba(18,14,40,.96);border:1px solid rgba(255,255,255,.2);box-shadow:0 18px 44px rgba(0,0,0,.5);backdrop-filter:blur(16px);color:#fff}
+.music-menu{position:absolute;z-index:30;top:calc(100% + 12px);bottom:auto;right:0;width:min(300px,calc(100vw - 28px));max-height:min(46vh,320px);overflow:auto;padding:6px;border-radius:16px;background:rgba(18,14,40,.96);border:1px solid rgba(255,255,255,.2);box-shadow:0 18px 44px rgba(0,0,0,.5);backdrop-filter:blur(16px);color:#fff}
 .music-menu[hidden]{display:none}
 .music-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:.9rem;text-align:left}
 .music-menu button .mn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -528,9 +528,9 @@ const pick=a=>a.find(x=>/^carta\./i.test(x.name))||a[0];
 async function loadCarta(f){const t=await readText("carta",{f});
 if(t==null){if(LT===null)drawCarta(null);return false}drawCarta(t);return true}
 async function apply(id,a){if(id==="audio"){setMusic(a);return true}if(id==="carta"){if(a&&!a.length){drawCarta(null);return true}return loadCarta(a?pick(a).name:"carta.txt")}D[id]=a?a.map(x=>x.category?({category:true,n:x.name,path:x.path}):({n:nice(x.name),f:x.path||x.name})):DEF[id];if(id==="fotos"||id==="videos")MEDIA_PATH[id]="";draw(id);return true}
-async function scan(){const t=LOCAL?null:await gh("git/trees/HEAD?recursive=1"),all=t&&t.tree?t.tree.filter(x=>x.type==="blob"):null;
+async function scan(){const t=LOCAL?null:await gh("git/trees/main?recursive=1"),all=t&&t.tree?t.tree.filter(x=>x.type==="blob"):null;
 for(const id of Object.keys(DIR)){let a=null;
-if(all&&(id==="fotos"||id==="videos")){const prefix=DIR[id]+"/",seen=new Set();a=[];for(const x of all){if(!x.path.startsWith(prefix))continue;const rel=x.path.slice(prefix.length),parts=rel.split("/");if(parts.length>1){for(let z=1;z<parts.length;z++){const folder=parts.slice(0,z).join("/");if(!seen.has(folder)){seen.add(folder);a.push({name:parts[z-1],path:folder,category:true})}}}else a.push({name:parts[0],path:rel,sha:x.sha})}}
+if(all&&(id==="fotos"||id==="videos")){const prefix=DIR[id]+"/",folders=new Set();a=[];for(const x of all){if(!x.path.startsWith(prefix))continue;const rel=x.path.slice(prefix.length),parts=rel.split("/");if(parts.length>1){for(let n=1;n<parts.length;n++)folders.add(parts.slice(0,n).join("/"))}else if(okName(id,parts[0]))a.push({name:parts[0],path:rel,sha:x.sha})}for(const path of folders)a.push({name:path.split("/").pop(),path,category:true})}
 else if(all)a=all.filter(x=>x.path.startsWith(DIR[id]+"/")&&x.path.indexOf("/",DIR[id].length+1)<0).map(x=>({name:x.path.slice(DIR[id].length+1),sha:x.sha}));
 else if(LOCAL)a=await listLocal(id);
 else{const j=await gh("contents/"+DIR[id]);a=Array.isArray(j)?j.filter(x=>x.type==="file"||((id==="fotos"||id==="videos")&&x.type==="dir")).map(x=>({name:x.name,path:x.name,category:x.type==="dir"})):await dirList(id)}
@@ -567,7 +567,7 @@ function closeLetter(){$("#lf").hidden=true;const e=$("#env2");if(e)e.focus()}
 $("#lx").innerHTML=ic("x");$("#lx").onclick=closeLetter;addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#lf").hidden)closeLetter()});
 function draw(id){const L=D[id]||[],g=$("#fl-"+id);g.innerHTML="";
 const media=id==="fotos"||id==="videos",prefix=MEDIA_PATH[id]||"";
-const visible=media?L.filter(it=>{const p=it.path||it.f||it.name;if(it.category)return p.split("/").length===prefix.split("/").filter(Boolean).length+1&&p.startsWith(prefix);return p.startsWith(prefix)&&p.slice(prefix.length).indexOf("/")<0}):L;
+const visible=media?L.filter(it=>{const p=it.path||it.f||it.name;const parent=prefix.replace(/\/$/,"");if(it.category){const parentOf=p.includes("/")?p.slice(0,p.lastIndexOf("/")):"";return parentOf===parent}return p.startsWith(prefix)&&p.slice(prefix.length).indexOf("/")<0}):L;
 if(media&&prefix){const back=document.createElement("button");back.className="fo folder-back";back.innerHTML='<div class="th doc">↩</div><b>Volver</b>';back.onclick=()=>{MEDIA_PATH[id]=prefix.split("/").filter(Boolean).slice(0,-1).join("/");draw(id)};g.appendChild(back)}
 if(!visible.length)g.innerHTML+=`<div class="em">${ic(id==="fotos"?"photo":id==="videos"?"film":"note")}<b>Esta carpeta está vacía</b><small>${media?"No hay archivos en esta categoría.":LOCAL?`Conecta la carpeta de la web con el botón de abajo para ver los archivos de ${DIR[id]}.`:`Los archivos agregados a la carpeta ${DIR[id]} aparecerán aquí.`}</small></div>`;
 visible.forEach((it,k)=>{const b=document.createElement("button");b.className="fo";

@@ -1,4 +1,0 @@
-CARPETA DE DEDICATORIAS
-Cada dedicatoria es un archivo .txt y se muestra sola. Separa los párrafos con una línea en blanco.
-Si el último párrafo empieza con "—", se muestra como firma.
-El título sale del nombre del archivo: "para-isa.txt" se muestra como "Para isa".

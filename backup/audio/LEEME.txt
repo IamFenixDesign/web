@@ -1,6 +1,0 @@
-CARPETA DE AUDIO (música de la pantalla de Inicio)
-Sube aquí tus canciones (mp3, m4a, ogg, wav, flac...) con el nombre que quieras. Se detectan solas.
-El título que se ve sale del nombre del archivo.
-En la pantalla de Inicio, pasa el mouse por el botón de play/pausa para ver la lista y elegir cuál suena.
-En el celular, mantén el dedo sobre el botón y desliza hasta la canción que quieras.
-Si hay una sola canción, se repite; si hay varias, al terminar pasa a la siguiente.

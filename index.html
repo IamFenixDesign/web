@@ -94,32 +94,33 @@ h1 b{display:block;font-size:clamp(4rem,15vw,8rem);line-height:.95;background:li
 .w:hover{transform:translateY(-2px);background:var(--tab)}
 .w .bx{display:grid;place-items:center;width:44px;height:44px;border-radius:10px;background:var(--acc);color:#fff;font-size:22px;flex:none}
 .w b{display:block}.w small{color:var(--mu)}
-/* Mini reproductor compacto: cristal, controles en una sola línea */
-.music-card{position:relative;z-index:20;display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:12px;width:min(430px,calc(100% - 24px));margin:18px auto 6px;padding:12px 14px;border-radius:18px;background:rgba(18,14,40,.42);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 12px 32px rgba(0,0,0,.25);color:#fff}
-.music-info{min-width:0;display:flex;flex-direction:column;gap:3px;color:#fff}
-.music-info b{max-width:100%;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.music-info span{font-size:.7rem;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mp-ctl{display:flex;align-items:center;gap:7px}
-.mp-sk{display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:15px}
-.mp-sk:hover{background:rgba(255,255,255,.25)}
+/* Reproductor persistente: permanece visible sobre el escritorio aunque haya ventanas abiertas */
+.music-card{position:fixed;z-index:9999;left:50%;bottom:clamp(132px,19vh,190px);transform:translateX(-50%);display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:11px;width:min(470px,calc(100% - 24px));margin:0;padding:12px 14px;border-radius:20px;background:linear-gradient(135deg,rgba(25,20,48,.94),rgba(54,35,75,.9));border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(24px) saturate(1.45);-webkit-backdrop-filter:blur(24px) saturate(1.45);box-shadow:0 18px 48px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.12);color:#fff}
+.music-card::before{content:"♫";display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#ff8fc7,#8d7bff);font-size:24px;color:#fff;box-shadow:0 6px 18px rgba(180,112,255,.28)}
+.music-info{min-width:0;display:flex;flex-direction:column;gap:4px;color:#fff}
+.music-info b{max-width:100%;font-size:.88rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-info span{font-size:.69rem;color:rgba(255,255,255,.67);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-ctl{display:flex;align-items:center;gap:6px}
+.mp-sk{display:grid;place-items:center;width:30px;height:30px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.09);color:#fff;font-size:14px}
+.mp-sk:hover{background:rgba(255,255,255,.2)}
 .music-wrap{position:relative;flex:none}
-.music-toggle{display:grid;place-items:center;width:42px;height:42px;padding:0;border:0;border-radius:50%;background:linear-gradient(135deg,#ff8fc7,#a78bfa);color:#fff;font-size:20px;box-shadow:0 5px 14px rgba(0,0,0,.25);touch-action:none}
-.music-toggle:hover{transform:scale(1.06)}
-.music-menu{position:absolute;z-index:30;top:calc(100% + 12px);bottom:auto;right:0;width:min(300px,calc(100vw - 28px));max-height:min(46vh,320px);overflow:auto;padding:6px;border-radius:16px;background:rgba(18,14,40,.96);border:1px solid rgba(255,255,255,.2);box-shadow:0 18px 44px rgba(0,0,0,.5);backdrop-filter:blur(16px);color:#fff}
+.music-toggle{display:grid;place-items:center;width:43px;height:43px;padding:0;border:0;border-radius:50%;background:#fff;color:#39264f;font-size:19px;box-shadow:0 4px 16px rgba(0,0,0,.2);touch-action:manipulation;transition:transform .18s}
+.music-toggle:hover{transform:scale(1.07)}
+.music-menu{position:absolute;z-index:10000;top:calc(100% + 10px);bottom:auto;right:0;width:min(330px,calc(100vw - 28px));max-height:min(34vh,260px);overflow:auto;padding:7px;border-radius:17px;background:rgba(23,18,42,.98);border:1px solid rgba(255,255,255,.2);box-shadow:0 18px 44px rgba(0,0,0,.5);backdrop-filter:blur(18px);color:#fff}
 .music-menu[hidden]{display:none}
-.music-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:.9rem;text-align:left}
+.music-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border:0;border-radius:11px;background:transparent;color:#fff;font-size:.88rem;text-align:left}
 .music-menu button .mn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.music-menu button .mi{flex:none;width:20px;text-align:center;font-size:.8rem;color:rgba(255,255,255,.7)}
-.music-menu button.on,.music-menu button:hover{background:rgba(255,255,255,.16)}
-.music-menu .mh{margin:4px 12px 6px;font-size:.76rem;color:rgba(255,255,255,.65)}
-.eqb{display:inline-flex;align-items:flex-end;gap:2px;height:13px}.eqb i{width:3px;background:#ff8fc7;border-radius:2px;animation:eqb .8s ease-in-out infinite}
+.music-menu button .mi{flex:none;width:20px;text-align:center;font-size:.78rem;color:rgba(255,255,255,.65)}
+.music-menu button.on,.music-menu button:hover,.music-menu button.hov{background:rgba(255,255,255,.15)}
+.music-menu .mh{margin:5px 12px 7px;font-size:.74rem;color:rgba(255,255,255,.6)}
+.eqb{display:inline-flex;align-items:flex-end;gap:2px;height:13px}.eqb i{width:3px;background:#ff9bcb;border-radius:2px;animation:eqb .8s ease-in-out infinite}
 .eqb i:nth-child(2){animation-delay:.2s}.eqb i:nth-child(3){animation-delay:.4s}
 @keyframes eqb{0%,100%{height:3px}50%{height:13px}}
-.mp-row{grid-column:1/-1;display:flex;align-items:center;gap:8px;width:100%;font-size:.67rem;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.78)}
+.mp-row{grid-column:1/-1;display:flex;align-items:center;gap:8px;width:100%;font-size:.67rem;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.75)}
 .mp-row>span{flex:none;min-width:2.4em}.mp-row>span:last-child{text-align:right}
 .mp-bar{position:relative;flex:1;height:15px;cursor:pointer;touch-action:none;user-select:none;outline:0}
-.mp-bar::before{content:"";position:absolute;left:0;right:0;top:6px;height:3px;border-radius:4px;background:rgba(255,255,255,.25)}
-.mp-bar i{position:absolute;left:0;top:6px;height:3px;width:0;border-radius:4px;background:linear-gradient(90deg,#ff8fc7,#b79bff)}
+.mp-bar::before{content:"";position:absolute;left:0;right:0;top:6px;height:3px;border-radius:4px;background:rgba(255,255,255,.2)}
+.mp-bar i{position:absolute;left:0;top:6px;height:3px;width:0;border-radius:4px;background:linear-gradient(90deg,#ff91c6,#a99aff)}
 .mp-bar b{position:absolute;top:2px;left:0;width:11px;height:11px;margin-left:-5px;border-radius:50%;background:#fff;transform:scale(0);transition:transform .15s}
 .mp-bar:hover b,.mp-bar:focus-visible b,.mp-bar.drag b{transform:scale(1)}
 .mp-bar.drag i,.mp-bar.drag b{transition:none}
@@ -174,7 +175,7 @@ dialog video{display:block;width:100%;max-height:70vh;background:#000}
 .tray .ic{font-size:15px}
 .toast{position:fixed;left:50%;bottom:70px;transform:translate(-50%,20px);padding:10px 16px;border-radius:8px;background:var(--pane);border:1px solid var(--bd);box-shadow:var(--sh);opacity:0;pointer-events:none;transition:.25s;z-index:50;font-size:.9rem}
 .toast.on{opacity:1;transform:translate(-50%,0)}
-@media (max-width:760px){.music-card{width:min(430px,calc(100% - 16px));gap:9px;padding:10px 12px}.hero{grid-template-columns:1fr}.cw{order:2}.tray .ic,.ab{display:none}.win{left:0!important;top:0!important;width:100%!important;height:100%!important;max-height:100%!important}.win .pane{flex:1}.icons{flex-direction:row;flex-wrap:wrap;width:100%;align-content:flex-start}.di{width:78px}.tab:not(.on) span{display:none}.tab{padding:0 12px}.sub{max-width:none}}
+@media (max-width:760px){.music-card{bottom:clamp(112px,17vh,155px);width:calc(100% - 20px);grid-template-columns:40px minmax(0,1fr) auto;gap:8px;padding:10px 11px}.music-card::before{width:38px;height:38px;font-size:21px}.music-toggle{width:39px;height:39px}.mp-sk{width:27px;height:27px}.music-info b{font-size:.8rem}.music-info span{font-size:.64rem}.music-menu{max-height:30vh}.hero{grid-template-columns:1fr}.cw{order:2}.tray .ic,.ab{display:none}.win{left:0!important;top:0!important;width:100%!important;height:100%!important;max-height:100%!important}.win .pane{flex:1}.icons{flex-direction:row;flex-wrap:wrap;width:100%;align-content:flex-start}.di{width:78px}.tab:not(.on) span{display:none}.tab{padding:0 12px}.sub{max-width:none}}
 @media (max-width:760px) and (max-height:700px){#cake{width:170px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 .fl{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;align-items:start}
@@ -528,17 +529,57 @@ const pick=a=>a.find(x=>/^carta\./i.test(x.name))||a[0];
 async function loadCarta(f){const t=await readText("carta",{f});
 if(t==null){if(LT===null)drawCarta(null);return false}drawCarta(t);return true}
 async function apply(id,a){if(id==="audio"){setMusic(a);return true}if(id==="carta"){if(a&&!a.length){drawCarta(null);return true}return loadCarta(a?pick(a).name:"carta.txt")}D[id]=a?a.map(x=>x.category?({category:true,n:x.name,path:x.path}):({n:nice(x.name),f:x.path||x.name})):DEF[id];if(id==="fotos"||id==="videos")MEDIA_PATH[id]="";draw(id);return true}
-async function scan(){const t=LOCAL?null:await gh("git/trees/main?recursive=1"),all=t&&t.tree?t.tree.filter(x=>x.type==="blob"):null;
-for(const id of Object.keys(DIR)){let a=null;
-if(all&&(id==="fotos"||id==="videos")){const prefix=DIR[id]+"/",folders=new Set();a=[];for(const x of all){if(!x.path.startsWith(prefix))continue;const rel=x.path.slice(prefix.length),parts=rel.split("/");if(parts.length>1){for(let n=1;n<parts.length;n++)folders.add(parts.slice(0,n).join("/"))}else if(okName(id,parts[0]))a.push({name:parts[0],path:rel,sha:x.sha})}for(const path of folders)a.push({name:path.split("/").pop(),path,category:true})}
-else if(all)a=all.filter(x=>x.path.startsWith(DIR[id]+"/")&&x.path.indexOf("/",DIR[id].length+1)<0).map(x=>({name:x.path.slice(DIR[id].length+1),sha:x.sha}));
-else if(LOCAL)a=await listLocal(id);
-else{const j=await gh("contents/"+DIR[id]);a=Array.isArray(j)?j.filter(x=>x.type==="file"||((id==="fotos"||id==="videos")&&x.type==="dir")).map(x=>({name:x.name,path:x.name,category:x.type==="dir"})):await dirList(id)}
-if(!a){if(!(id in SIG)){let c=null;if(!LOCAL)try{c=JSON.parse(localStorage.getItem("isa:"+id))}catch(e){}SIG[id]=null;await apply(id,c)}continue}
-a=a.filter(x=>x.category||okName(id,x.name)).sort((x,y)=>(x.category===y.category?x.name.localeCompare(y.name,"es",{numeric:true}):x.category?-1:1));
-if(!LOCAL)try{localStorage.setItem("isa:"+id,JSON.stringify(a))}catch(e){}
-const g=JSON.stringify(id==="carta"?(a.length?[pick(a)]:[]):a.map(x=>(x.category?"D:":"F:")+(x.path||x.name)));if(SIG[id]===g)continue;SIG[id]=g;
-if(!(await apply(id,a)))delete SIG[id]}}
+async function scan(){
+let all=null;
+if(!LOCAL){
+ const meta=await gh("repos/"+REPO);
+ const branch=meta&&meta.default_branch?meta.default_branch:"main";
+ const tree=await gh("git/trees/"+encodeURIComponent(branch)+"?recursive=1");
+ if(tree&&Array.isArray(tree.tree))all=tree.tree.filter(x=>x.type==="blob");
+}
+for(const id of Object.keys(DIR)){
+ let a=[];
+ if(all){
+  const prefix=DIR[id]+"/",files=all.filter(x=>x.path.startsWith(prefix));
+  if(id==="fotos"||id==="videos"){
+   const folders=new Set();
+   for(const x of files){
+    const rel=x.path.slice(prefix.length),parts=rel.split("/");
+    if(parts.length>1){for(let n=1;n<parts.length;n++)folders.add(parts.slice(0,n).join("/"))}
+    else if(okName(id,parts[0]))a.push({name:parts[0],path:rel,sha:x.sha});
+   }
+   for(const path of folders)a.push({name:path.split("/").pop(),path,category:true});
+  }else{
+   a=files.filter(x=>x.path.indexOf("/",prefix.length)<0&&okName(id,x.path.slice(prefix.length)))
+    .map(x=>({name:x.path.slice(prefix.length),path:x.path.slice(prefix.length),sha:x.sha}));
+  }
+ }else if(LOCAL){
+  a=await listLocal(id)||[];
+ }else{
+  // Fallback: recorrer recursivamente la API Contents si el árbol Git no está disponible.
+  async function walk(path,relative=""){
+   const items=await gh("contents/"+path);
+   if(!Array.isArray(items))return;
+   for(const x of items){
+    const rel=relative?relative+"/"+x.name:x.name;
+    if(x.type==="dir"&&(id==="fotos"||id==="videos")){
+     a.push({name:x.name,path:rel,category:true});
+     await walk(path+"/"+x.name,rel);
+    }else if(x.type==="file"&&okName(id,x.name)){
+     if(!relative||id==="fotos"||id==="videos")a.push({name:x.name,path:rel,sha:x.sha});
+    }
+   }
+  }
+  await walk(DIR[id]);
+ }
+ if(!a){a=[]}
+ a=a.filter(x=>x.category||okName(id,x.name)).sort((x,y)=>(x.category===y.category?x.path.localeCompare(y.path,"es",{numeric:true}):x.category?-1:1));
+ if(!LOCAL)try{localStorage.setItem("isa:"+id,JSON.stringify(a))}catch(e){}
+ const sig=JSON.stringify(id==="carta"?(a.length?[pick(a)]:[]):a.map(x=>(x.category?"D:":"F:")+(x.path||x.name)));
+ if(SIG[id]===sig)continue;SIG[id]=sig;
+ if(!(await apply(id,a)))delete SIG[id];
+}
+}
 let LT=null;
 function renderLetter(){const P=String(LT||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean),sg=x=>x.startsWith("—");
 $("#lp").innerHTML=P.map(p=>`<p${sg(p)?' style="text-align:right"':""}>${esc(p)}</p>`).join("")}
@@ -632,7 +673,7 @@ let MT=[],MI=-1,MLOAD=null,MURL=null,mTm=0,mPress=null,mNoClick=false,mDrag=fals
 mPrev.innerHTML=ic("mprev");mNext.innerHTML=ic("mnext");
 const audName=n=>n.replace(/\.[^.]+$/,"").replace(/_+/g," ").replace(/\s+/g," ").trim()||n;
 const fmt=t=>isFinite(t)&&t>0?Math.floor(t/60)+":"+String(Math.floor(t%60)).padStart(2,"0"):"0:00";
-async function audSrc(n){if(LOCAL){if(!ROOT)return null;try{const d=await ROOT.getDirectoryHandle("audio"),f=await(await d.getFileHandle(n)).getFile();if(MURL)URL.revokeObjectURL(MURL);MURL=URL.createObjectURL(f);return MURL}catch(e){return null}}return"audio/"+encodeURIComponent(n)}
+async function audSrc(track){const n=typeof track==="string"?track:(track.path||track.name);if(LOCAL){if(!ROOT)return null;try{const d=await ROOT.getDirectoryHandle("audio"),f=await(await d.getFileHandle(n)).getFile();if(MURL)URL.revokeObjectURL(MURL);MURL=URL.createObjectURL(f);return MURL}catch(e){return null}}return new URL("audio/"+n.split("/").map(encodeURIComponent).join("/"),document.baseURI).href}
 const mPlaying=()=>!AUD.paused&&!AUD.ended;
 function mSub(t){$("#music-sub").textContent=t}
 function paintProgress(){const d=AUD.duration,c=AUD.currentTime||0,f=isFinite(d)&&d>0?Math.min(1,c/d):0;
@@ -645,17 +686,26 @@ $("#music-title").textContent=n?MT[Math.max(MI,0)].t:(LOCAL&&!ROOT?"Conectá la 
 if(n)mSub(pl?"Reproduciendo · pasá por el botón para cambiar":n>1?"Pasá el mouse o el dedo por el botón para elegir":"Tocá el botón para escuchar");else mSub(LOCAL&&!ROOT?"Así se carga la música desde tu PC":"Se detectan solas, con cualquier nombre");
 mMenu.innerHTML=MT.map((x,i)=>`<button type="button" role="option" data-i="${i}" aria-selected="${i===MI}" class="${i===MI?"on":""}"><span class="mi">${i===MI&&pl?'<span class="eqb"><i></i><i></i><i></i></span>':i+1}</span><span class="mn">${esc(x.t)}</span></button>`).join("")+(n===1?'<p class="mh">Agregá más canciones a la carpeta audio para poder elegir</p>':"");
 AUD.loop=n===1;paintProgress()}
-async function loadTrack(i){const u=await audSrc(MT[i].name);if(!u)return false;AUD.src=u;MLOAD=MT[i].name;AUD.load();paintProgress();return true}
-function setMusic(a){const cur=MI>=0&&MT[MI]?MT[MI].name:null;MT=(a||[]).map(x=>({name:x.name,t:audName(x.name)}));
-MI=cur?MT.findIndex(x=>x.name===cur):-1;
-if(cur&&MI<0){AUD.pause();AUD.removeAttribute("src");AUD.load();MLOAD=null}
-if(MI<0&&MT.length)MI=0;
-if(!MT.length){mHide();AUD.removeAttribute("src");MLOAD=null}
-paintMusic();
-if(MT.length&&MLOAD!==MT[MI].name&&AUD.paused)loadTrack(MI).then(paintMusic)}
-async function playTrack(i){if(!MT[i])return;MI=i;paintMusic();
-if(MLOAD!==MT[i].name||!AUD.src){if(!(await loadTrack(i))){mSub("No se pudo abrir ese archivo");return}}
-try{await AUD.play()}catch(e){mSub("No se pudo reproducir ese archivo");MLOAD=null}paintMusic()}
+let MSEQ=0;
+async function loadTrack(i){
+ const track=MT[i];if(!track)return false;
+ const seq=++MSEQ,u=await audSrc(track);if(!u||seq!==MSEQ)return false;
+ AUD.pause();MLOAD=track.name;AUD.src=u;AUD.preload="auto";AUD.load();paintProgress();
+ const ready=await new Promise(resolve=>{
+  if(AUD.readyState>=3){resolve(true);return}
+  let done=false;const finish=v=>{if(done)return;done=true;clearTimeout(timer);AUD.removeEventListener("canplay",yes);AUD.removeEventListener("error",no);resolve(v)};
+  const yes=()=>finish(true),no=()=>finish(false),timer=setTimeout(()=>finish(AUD.readyState>=2),15000);
+  AUD.addEventListener("canplay",yes,{once:true});AUD.addEventListener("error",no,{once:true});
+ });
+ return ready&&seq===MSEQ;
+}
+async function playTrack(i){
+ if(!MT[i])return;
+ MI=i;paintMusic();
+ if(MLOAD!==MT[i].name||!AUD.currentSrc){const ok=await loadTrack(i);if(!ok){mSub("No se pudo cargar esta canción. Revisá el archivo en audio/");MLOAD=null;paintMusic();return}}
+ try{await AUD.play()}catch(e){mSub("No se pudo iniciar el audio. Volvé a tocar Play.");}
+ paintMusic();
+}
 async function toggleMusic(){if(!MT.length)return;if(mPlaying())AUD.pause();else await playTrack(MI<0?0:MI);paintMusic()}
 ["play","playing","pause","ended","emptied"].forEach(k=>AUD.addEventListener(k,paintMusic));
 ["timeupdate","loadedmetadata","durationchange","seeked"].forEach(k=>AUD.addEventListener(k,paintProgress));

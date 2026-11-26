@@ -74,3 +74,4 @@ Coloca tus canciones (mp3, m4a, ogg, wav, flac...) en la carpeta `audio/`, con c
 - **Play/pausa:** toca o haz clic en el botón.
 - **Elegir canción:** pasa el mouse por el botón y aparece la lista; en el celular, mantén el dedo sobre el botón y deslízalo hasta la canción (o toca una de la lista).
 - **Al terminar:** si hay varias canciones pasa a la siguiente; si hay una sola, se repite.
+- **Minireproductor:** bajo el botón de play/pausa, centrado en el Inicio, hay botones de canción anterior y siguiente, el título y una barra con el tiempo. Toca o arrastra la barra para adelantar o atrasar (también con las flechas ← → del teclado). "Anterior" vuelve al inicio de la canción si ya pasaron 3 segundos.

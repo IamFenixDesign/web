@@ -1,0 +1,3 @@
+CARPETA DE LA CARTA ESPECIAL
+La carta es el archivo carta.txt (si no existe, se usa el primer .txt de la carpeta).
+Separa los párrafos con una línea en blanco. Si el último párrafo empieza con "—", se muestra como firma.

@@ -2,3 +2,4 @@ CARPETA DE VIDEOS
 Sube aquí cualquier video (mp4, webm, mov...) o imagen (jpg, png, webp...). Se muestra solo, ordenado por nombre.
 Por la web de GitHub el límite es de 25 MB por archivo; con git llega a 100 MB.
 El nombre que se ve sale del nombre del archivo: "nuestro-dia.mp4" se muestra como "Nuestro dia".
+CATEGORIAS: crea subcarpetas dentro de videos/ (por ejemplo "videos/Cumpleaños/") y cada una se muestra como una categoría. Los archivos sueltos quedan en "General".

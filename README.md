@@ -5,8 +5,8 @@ Web de cumpleaños con diseño estilo Windows 11. Cada sección es una **carpeta
 | Ícono | Qué muestra | Carpeta del repositorio |
 |---|---|---|
 | Inicio | Es el fondo de la web (no una ventana): banderines en el borde superior, cartel "Feliz cumpleaños Isa", pastel con velas, globos y confeti. El botón de la casa en la barra minimiza las ventanas y vuelve a él | |
-| Fotos | Las fotos de Isa | `fotos/` |
-| Videos | Los videos | `videos/` |
+| Fotos | Las fotos de Isa, separadas por categorías (subcarpetas) | `fotos/` |
+| Videos | Los videos, separados por categorías (subcarpetas) | `videos/` |
 | Dedicatorias | Las dedicatorias (archivos `.txt`) | `dedicatorias/` |
 | Carta especial | Muestra directamente el sobre; al tocarlo, la carta se abre en pantalla completa (`carta.txt`) | `carta-especial/` |
 | Audio | Canción de fondo del reproductor de Inicio | `audio/` |
@@ -31,6 +31,25 @@ Solo sube el archivo a su carpeta (por ejemplo, `fotos/foto1.jpg`). Aparece solo
 
 - **Fotos y videos:** cualquier imagen (jpg, png, webp, gif, avif, svg) o video (mp4, webm, mov) que subas a `fotos/` o `videos/` se muestra solo, con su miniatura. Por la web de GitHub el límite es de 25 MB por archivo; con git llega a 100 MB.
 - **Dedicatorias y carta:** archivos `.txt`. Separa los párrafos con una línea en blanco. Si el último párrafo empieza con `—`, se muestra como firma.
+
+## Categorías en Fotos y Videos
+Dentro de `fotos/` y `videos/` puedes crear **subcarpetas**: cada una es una categoría. Por ejemplo:
+
+```
+fotos/
+  Cumpleaños 2026/   foto1.jpg  foto2.jpg
+  familia_y_amigos/  foto3.jpg
+  foto-suelta.jpg    (queda en "General")
+videos/
+  La fiesta/         video1.mp4
+```
+
+- Arriba de la ventana aparecen botones con cada categoría y la cantidad de archivos. **Todas** muestra todo separado por secciones, con el nombre de la carpeta como título; al tocar un botón (o el título de una sección) se ve solo esa categoría.
+- El nombre de la categoría sale del nombre de la carpeta (`familia_y_amigos` → "Familia y amigos").
+- Los archivos que estén sueltos en `fotos/` o `videos/` (sin subcarpeta) se agrupan en **General**. Si no hay ninguna subcarpeta, la ventana se ve como siempre, sin categorías.
+- Al abrir una foto o un video, las flechas ← → y el deslizado recorren solo la categoría que se está viendo.
+- Las categorías se detectan solas, igual que los archivos: se actualizan cada 30 segundos sin recargar. Una carpeta vacía no aparece (Git tampoco guarda carpetas vacías).
+- Al subir por la web de GitHub, escribe `Nombre-de-la-carpeta/` antes del nombre del archivo en "Add file > Create new file", o arrastra la carpeta completa en "Upload files".
 
 ## Publicar en GitHub Pages
 Repositorio: https://github.com/IamFenixDesign/web

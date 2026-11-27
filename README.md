@@ -44,7 +44,7 @@ videos/
   La fiesta/         video1.mp4
 ```
 
-- Arriba de la ventana aparecen botones con cada categoría y la cantidad de archivos. **Todas** muestra todo separado por secciones, con el nombre de la carpeta como título; al tocar un botón (o el título de una sección) se ve solo esa categoría.
+- Arriba de la ventana aparecen botones con cada categoría y su cantidad de archivos. Al tocar uno se ven solo los archivos de esa categoría (al abrir la ventana se muestra la primera).
 - El nombre de la categoría sale del nombre de la carpeta (`familia_y_amigos` → "Familia y amigos").
 - Los archivos que estén sueltos en `fotos/` o `videos/` (sin subcarpeta) se agrupan en **General**. Si no hay ninguna subcarpeta, la ventana se ve como siempre, sin categorías.
 - Al abrir una foto o un video, las flechas ← → y el deslizado recorren solo la categoría que se está viendo.

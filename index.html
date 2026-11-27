@@ -601,20 +601,17 @@ function paintCats(id,cs,hc){const bar=$("#cb-"+id);bar.hidden=!hc;bar.innerHTML
 const add=(key,label,n,fo)=>{const b=document.createElement("button");b.type="button";b.className="cat"+(CAT[id]===key?" on":"");b.setAttribute("aria-pressed",CAT[id]===key);
 b.innerHTML=(fo?ic("folder"):"")+"<span></span><small></small>";b.querySelector("span").textContent=label;b.querySelector("small").textContent=n;
 b.onclick=()=>{CAT[id]=key;draw(id);const p=bar.closest(".pane");if(p)p.scrollTop=0};bar.appendChild(b)};
-add(undefined,"Todas",(D[id]||[]).length,false);cs.forEach(([c,l])=>add(c,catName(c),l.length,true))}
+cs.forEach(([c,l])=>add(c,catName(c),l.length,true))}
 function tile(id,it,k,g){const b=document.createElement("button"),u=srcOf(id,it);b.className="fo";
 const vd=kindOf(it.f||it.u)==="vid";
 b.innerHTML=(id==="fotos"||id==="videos"?(vd?`<div class="th ph vd" style="--h:${(k*67+250)%360}">${u?`<video src="${esc(u)}#t=0.5" preload="metadata" muted playsinline></video>`:""}<span class="pl">${ic("play")}</span></div>`:`<div class="th ph">${u?`<img src="${esc(u)}" alt="" loading="lazy">`:ic("photo")}</div>`):`<div class="th doc">${ic(id==="carta"?"mail":"note")}</div>`)+"<b></b>";
 if(id!=="fotos"&&id!=="videos")b.lastChild.textContent=it.n;b.onclick=()=>view(id,it);g.appendChild(b);const im=b.querySelector("img");if(im){let r=0;im.onerror=()=>{if(r++<20)setTimeout(()=>{im.src=u+(u.includes("?")?"&":"?")+"r="+r},6000)}}}
 function draw(id){const g=$("#fl-"+id);g.innerHTML="";const M=isM(id);let cs=[],hc=false;
-if(M){cs=cats(id);hc=cs.some(([c])=>c!=="");if(!hc||(CAT[id]!==undefined&&!cs.some(([c])=>c===CAT[id])))CAT[id]=undefined;paintCats(id,cs,hc)}
+if(M){cs=cats(id);hc=cs.some(([c])=>c!=="");if(!hc)CAT[id]=undefined;else if(CAT[id]===undefined||!cs.some(([c])=>c===CAT[id]))CAT[id]=cs[0][0];paintCats(id,cs,hc)}
 const L=M?visible(id):D[id];
 if(!(D[id]||[]).length)g.innerHTML=`<div class="em">${ic(id==="fotos"?"photo":id==="videos"?"film":"note")}<b>Esta carpeta está vacía</b><small>${LOCAL?`Conecta la carpeta de la web con el botón de abajo para ver los archivos de ${DIR[id]}.`:`Los archivos agregados a la carpeta ${DIR[id]} aparecerán aquí.`}</small></div>`;
 let k=0;
-if(M&&hc&&CAT[id]===undefined){cs.forEach(([c,l])=>{const h=document.createElement("button");h.type="button";h.className="cg";h.innerHTML=ic("folder")+"<span></span><small></small>";
-h.querySelector("span").textContent=catName(c);h.querySelector("small").textContent=l.length+(l.length===1?" elemento":" elementos");
-h.onclick=()=>{CAT[id]=c;draw(id);const p=g.closest(".pane");if(p)p.scrollTop=0};g.appendChild(h);l.forEach(it=>tile(id,it,k++,g))})}
-else L.forEach(it=>tile(id,it,k++,g));
+L.forEach(it=>tile(id,it,k++,g));
 const nf=cs.filter(([c])=>c!=="").length;
 $("#st-"+id).textContent=L.length+(L.length===1?" elemento":" elementos")+(hc?" · "+nf+(nf===1?" categoría":" categorías"):"")}
 async function view(id,it,dir){const u=srcOf(id,it),b=$("#vb"),med=id==="fotos"||id==="videos";

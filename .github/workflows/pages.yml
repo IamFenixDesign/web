@@ -20,6 +20,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Generar manifest.json (lista de archivos y categorías)
+        run: |
+          python3 - <<'PY'
+          import os, json, subprocess
+          carpetas = ["fotos", "videos", "dedicatorias", "carta-especial", "audio"]
+          salida = {}
+          for d in carpetas:
+              items = []
+              for raiz, subs, archivos in os.walk(d):
+                  subs[:] = [x for x in subs if not x.startswith(".")]
+                  for f in archivos:
+                      if f.startswith("."):
+                          continue
+                      ruta = os.path.join(raiz, f)
+                      sha = subprocess.check_output(["git", "hash-object", ruta]).decode().strip()
+                      items.append({"name": os.path.relpath(ruta, d).replace(os.sep, "/"), "sha": sha})
+              salida[d] = sorted(items, key=lambda x: x["name"])
+          with open("manifest.json", "w", encoding="utf-8") as fh:
+              json.dump(salida, fh, ensure_ascii=False)
+          print({k: len(v) for k, v in salida.items()})
+          PY
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

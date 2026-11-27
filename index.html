@@ -552,9 +552,12 @@ const pick=a=>a.find(x=>/^carta\./i.test(x.name))||a[0];
 async function loadCarta(f){const t=await readText("carta",{f});
 if(t==null){if(LT===null)drawCarta(null);return false}drawCarta(t);return true}
 async function apply(id,a){if(id==="audio"){setMusic(a);return true}if(id==="carta"){if(a&&!a.length){drawCarta(null);return true}return loadCarta(a?pick(a).name:"carta.txt")}D[id]=a?a.map(x=>{const i=x.name.indexOf("/");return{n:nice(x.name.slice(x.name.lastIndexOf("/")+1)),f:x.name,c:i<0?"":x.name.slice(0,i)}}):DEF[id];draw(id);return true}
-async function scan(){const t=LOCAL?null:await gh("git/trees/HEAD?recursive=1"),all=t&&t.tree?t.tree.filter(x=>x.type==="blob"):null;
+/* manifest.json: lista de archivos generada al publicar (no depende de la API de GitHub ni de su límite de consultas) */
+async function manifest(){try{const r=await fetch("manifest.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return null;const j=await r.json();return j&&typeof j==="object"&&!Array.isArray(j)?j:null}catch(e){return null}}
+async function scan(){const mf=LOCAL?null:await manifest(),t=(LOCAL||mf)?null:await gh("git/trees/HEAD?recursive=1"),all=t&&t.tree?t.tree.filter(x=>x.type==="blob"):null;
 for(const id of Object.keys(DIR)){let a=null;
-if(all)a=all.filter(x=>x.path.startsWith(DIR[id]+"/")&&(isM(id)||x.path.indexOf("/",DIR[id].length+1)<0)).map(x=>({name:x.path.slice(DIR[id].length+1),sha:x.sha}));
+if(mf&&Array.isArray(mf[DIR[id]]))a=mf[DIR[id]].filter(x=>isM(id)||x.name.indexOf("/")<0).map(x=>({name:x.name,sha:x.sha}));
+else if(all)a=all.filter(x=>x.path.startsWith(DIR[id]+"/")&&(isM(id)||x.path.indexOf("/",DIR[id].length+1)<0)).map(x=>({name:x.path.slice(DIR[id].length+1),sha:x.sha}));
 else if(LOCAL)a=await listLocal(id);
 else{a=(await ghList(id))||await dirList(id)}
 if(!a){if(!(id in SIG)){let c=null;if(!LOCAL)try{c=JSON.parse(localStorage.getItem("isa:"+id))}catch(e){}SIG[id]=null;await apply(id,c)}continue}

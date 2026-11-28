@@ -562,7 +562,7 @@ let LO="carta";
 function renderLetter(t){const P=String(t==null?LT:t||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean),sg=x=>x.startsWith("—");
 $("#lp").innerHTML=P.map(p=>`<p${sg(p)?' style="text-align:right"':""}>${esc(p)}</p>`).join("")}
 function drawCarta(t){if(t==null){LT=null;$("#carta-box").innerHTML=`<div class="em">${ic("mail")}<b>Aún no hay carta</b><small>${LOCAL?"Conecta la carpeta de la web con el botón de abajo para ver la carta.":"Agrega un archivo carta.txt en la carpeta carta-especial y aparecerá aquí."}</small></div>`;return}LT=String(t);
-$("#carta-box").innerHTML=`<div class="cs2"><div id="cl"><button class="env" id="env2" aria-label="Abrir la carta"><span class="seal">${ic("heart")}</span></button><p class="hint">Toca el sobre para abrir tu carta</p></div></div>`;
+$("#carta-box").innerHTML=`<div class="cs2"><div id="cl"><button class="env" id="env2" aria-label="Abrir la carta"></button><p class="hint">Toca el sobre para abrir tu carta</p></div></div>`;
 $("#env2").onclick=askCode;if(!$("#lf").hidden&&LO==="carta")renderLetter()}
 function openLetter(t,src){LO=src||"carta";renderLetter(t);const l=$("#lf");l.hidden=false;l.scrollTop=0;$("#lx").focus();burst2()}
 /* Combinación de 8 números para abrir la carta (se guarda solo su huella, no el número) */
@@ -619,7 +619,7 @@ if(id==="fotos"||id==="videos"){if(kindOf(it.f||it.u)==="vid")b.innerHTML=u?`<vi
 else{let t=it.t;if(t==null&&u){t=await readText(id,it);if(t==null)t=""}
 const P=String(t||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean),sg=x=>x.startsWith("—");
 if(id==="dedicatorias")b.innerHTML=`<article class="note card">${ic("heart")}<h3>${esc(it.n)}</h3>${P.map(p=>sg(p)?`<div class="sig">${esc(p.replace(/^—\s*/,""))}</div>`:`<p>${esc(p)}</p>`).join("")}</article>`;
-else{b.innerHTML=`<div class="cs2"><div id="cl"><button class="env" id="env2" aria-label="Abrir la carta"><span class="seal">${ic("heart")}</span></button><p class="hint">Toca el sobre para abrir tu carta</p></div><div class="paper" id="pp">${P.map(p=>`<p${sg(p)?' style="text-align:right"':""}>${esc(p)}</p>`).join("")}</div></div>`;
+else{b.innerHTML=`<div class="cs2"><div id="cl"><button class="env" id="env2" aria-label="Abrir la carta"></button><p class="hint">Toca el sobre para abrir tu carta</p></div><div class="paper" id="pp">${P.map(p=>`<p${sg(p)?' style="text-align:right"':""}>${esc(p)}</p>`).join("")}</div></div>`;
 $("#env2").onclick=()=>{$("#cl").style.display="none";$("#pp").classList.add("on");burst2()}}}
 const v=$("#vw");if(!v.open)v.showModal();const m=b.querySelector("video");if(m)m.play().catch(()=>{});
 if(VL&&nn>1)[1,-1].forEach(k=>{const x=VL.l[(VI+k+nn)%nn];if(x&&kindOf(x.f||x.u)==="img")new Image().src=srcOf(VL.id,x)})}

@@ -7,7 +7,7 @@ Web de cumpleaños con diseño estilo Windows 11. Cada sección es una **carpeta
 | Inicio | Es el fondo de la web (no una ventana): banderines en el borde superior, cartel "Feliz cumpleaños Isa", pastel con velas, globos y confeti. El botón de la casa en la barra minimiza las ventanas y vuelve a él | |
 | Fotos | Las fotos de Isa, separadas por categorías (subcarpetas) | `fotos/` |
 | Videos | Los videos, separados por categorías (subcarpetas) | `videos/` |
-| Dedicatorias | Las dedicatorias (archivos `.txt`) | `dedicatorias/` |
+| Dedicatorias | Las dedicatorias, separadas por categorías (subcarpetas). Cada archivo `.txt` es una carta que se abre en pantalla completa, sin combinación | `dedicatorias/` |
 | Carta especial | Muestra directamente el sobre; al tocarlo, la carta se abre en pantalla completa (`carta.txt`) | `carta-especial/` |
 | Audio | Canción de fondo del reproductor de Inicio | `audio/` |
 
@@ -31,6 +31,19 @@ Solo sube el archivo a su carpeta (por ejemplo, `fotos/foto1.jpg`). Aparece solo
 
 - **Fotos y videos:** cualquier imagen (jpg, png, webp, gif, avif, svg) o video (mp4, webm, mov) que subas a `fotos/` o `videos/` se muestra solo, con su miniatura. Por la web de GitHub el límite es de 25 MB por archivo; con git llega a 100 MB.
 - **Dedicatorias y carta:** archivos `.txt`. Separa los párrafos con una línea en blanco. Si el último párrafo empieza con `—`, se muestra como firma.
+
+## Categorías en Dedicatorias
+Funcionan igual que en Fotos y Videos: cada **subcarpeta** de `dedicatorias/` es una categoría y los `.txt` sueltos quedan en **General**.
+
+```
+dedicatorias/
+  Familia/   de-mama.txt  de-abuela.txt
+  Amigas/    de-cami.txt
+  suelta.txt   (queda en "General")
+```
+
+- Cada dedicatoria se ve como un sobre; al tocarlo se abre como carta en pantalla completa (igual que la carta especial) pero **sin contraseña**. Se cierra con la ✕ o con Esc.
+- Los párrafos se separan con una línea en blanco; si el último empieza con `—`, se alinea a la derecha como firma.
 
 ## Categorías en Fotos y Videos
 Dentro de `fotos/` y `videos/` puedes crear **subcarpetas**: cada una es una categoría. Por ejemplo:

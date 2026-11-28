@@ -443,8 +443,8 @@ button, .fo, .di, .tab, .ti {
 </div>
 <div id="c-fotos"><div class="cats" id="cb-fotos" hidden></div><div class="fl" id="fl-fotos"></div><div class="stb" id="st-fotos"></div></div>
 <div id="c-videos"><div class="cats" id="cb-videos" hidden></div><div class="fl" id="fl-videos"></div><div class="stb" id="st-videos"></div></div>
-<div id="c-dedicatorias"><h2>Dedicatorias</h2><p class="mu">Unas palabras solo para ti.</p><div class="fl" id="fl-dedicatorias"></div><div class="stb" id="st-dedicatorias"></div></div>
-<div id="c-carta"><h2>Carta especial</h2><p class="mu">Una carta escrita con cariño.</p><div id="carta-box"></div></div>
+<div id="c-dedicatorias"><h2>Dedicatorias</h2><p class="mu">Unas palabras solo para ti.</p><div class="cats" id="cb-dedicatorias" hidden></div><div class="fl" id="fl-dedicatorias"></div><div class="stb" id="st-dedicatorias"></div></div>
+<div id="c-carta"><h2>Carta</h2><p class="mu"></p><div id="carta-box"></div></div>
 </div>
 <dialog id="vw"><div class="dh"><b id="vt"></b><button id="vx" aria-label="Cerrar"></button></div><div id="vs"><button class="vn" id="vp" aria-label="Anterior" hidden></button><div id="vb"></div><button class="vn" id="vn" aria-label="Siguiente" hidden></button></div></dialog>
 <div id="lf" hidden role="dialog" aria-modal="true" aria-label="Carta especial"><button id="lx" aria-label="Cerrar la carta"></button><div class="paper on" id="lp"></div></div>
@@ -461,6 +461,8 @@ const T=[["inicio","Inicio","home"],["fotos","Fotos","photo"],["videos","Videos"
 const DIR={fotos:"fotos",videos:"videos",dedicatorias:"dedicatorias",carta:"carta-especial",audio:"audio"};
 /* En fotos/ y videos/ cada subcarpeta es una categoría */
 const isM=id=>id==="fotos"||id==="videos";
+/* Secciones con categorías (subcarpetas): fotos, videos y dedicatorias */
+const isC=id=>isM(id)||id==="dedicatorias";
 /* Contenido de ejemplo: se usa si no se pueden leer las carpetas (por ejemplo, en la vista previa) */
 /* El contenido sale solo de los archivos de cada carpeta: no hay textos ni fotos de ejemplo dentro de la web */
 const DEF={fotos:[],videos:[],dedicatorias:[],carta:[]};
@@ -518,9 +520,9 @@ const idb=()=>new Promise((ok,no)=>{const r=indexedDB.open("isa-web",1);r.onupgr
 async function hGet(){try{const d=await idb();return await new Promise(ok=>{const q=d.transaction("h").objectStore("h").get("root");q.onsuccess=()=>ok(q.result||null);q.onerror=()=>ok(null)})}catch(e){return null}}
 async function hSet(v){try{const d=await idb();d.transaction("h","readwrite").objectStore("h").put(v,"root")}catch(e){}}
 async function listLocal(id){if(!ROOT)return null;try{const d=await ROOT.getDirectoryHandle(DIR[id]),a=[];
-const walk=async(dh,pre,dep)=>{for await(const[n,h]of dh.entries()){if(n[0]===".")continue;if(h.kind==="file"){const x={name:pre+n};if(id==="carta")x.sha=String((await h.getFile()).lastModified);a.push(x)}else if(isM(id)&&dep<3)await walk(h,pre+n+"/",dep+1)}};
+const walk=async(dh,pre,dep)=>{for await(const[n,h]of dh.entries()){if(n[0]===".")continue;if(h.kind==="file"){const x={name:pre+n};if(id==="carta")x.sha=String((await h.getFile()).lastModified);a.push(x)}else if(isC(id)&&dep<3)await walk(h,pre+n+"/",dep+1)}};
 await walk(d,"",0);return a}catch(e){return e&&e.name==="NotFoundError"?[]:null}}
-async function readText(id,it){if(LOCAL&&ROOT&&it.f){try{const d=await ROOT.getDirectoryHandle(DIR[id]);return await(await(await d.getFileHandle(it.f)).getFile()).text()}catch(e){return null}}
+async function readText(id,it){if(LOCAL&&ROOT&&it.f){try{let d=await ROOT.getDirectoryHandle(DIR[id]);const p=it.f.split("/"),fn=p.pop();for(const q of p)d=await d.getDirectoryHandle(q);return await(await(await d.getFileHandle(fn)).getFile()).text()}catch(e){return null}}
 try{const r=await fetch(srcOf(id,it),{cache:"no-store"});return r.ok?await r.text():null}catch(e){return null}}
 async function initLocal(){if(!LOCAL)return;const pk=$("#pick");pk.hidden=false;pk.textContent="Elegir la carpeta de la web para ver tus archivos";
 ROOT=await hGet();
@@ -531,12 +533,12 @@ try{let ok=false;if(ROOT){try{ok=(await ROOT.requestPermission({mode:"read"}))==
 if(!ok){ROOT=await showDirectoryPicker({id:"isa-web",mode:"read"});hSet(ROOT)}
 pk.hidden=true;for(const k in SIG)delete SIG[k];scan()}catch(e){}}}
 async function ghList(id){const j=await gh("contents/"+DIR[id]);if(!Array.isArray(j))return null;let a=j.filter(x=>x.type==="file").map(x=>({name:x.name,sha:x.sha}));
-if(isM(id))for(const d of j.filter(x=>x.type==="dir"&&x.name[0]!==".")){const q=await gh("contents/"+DIR[id]+"/"+encodeURIComponent(d.name));if(Array.isArray(q))a=a.concat(q.filter(x=>x.type==="file").map(x=>({name:d.name+"/"+x.name,sha:x.sha})))}
+if(isC(id))for(const d of j.filter(x=>x.type==="dir"&&x.name[0]!==".")){const q=await gh("contents/"+DIR[id]+"/"+encodeURIComponent(d.name));if(Array.isArray(q))a=a.concat(q.filter(x=>x.type==="file").map(x=>({name:d.name+"/"+x.name,sha:x.sha})))}
 return a}
 async function dirList(id,sub){try{const r=await fetch(DIR[id]+(sub?"/"+encodeURIComponent(sub):"")+"/",{cache:"no-store"});if(!r.ok)return null;const h=await r.text(),out=[];
 for(const m of h.matchAll(/href="([^"?#]+)"/g)){let x=m[1];const dir=/^[^\/.][^\/]*\/$/.test(x);try{x=decodeURIComponent(x)}catch(e){}
 x=x.replace(/\/$/,"").replace(/^.*\//,"");if(!x)continue;
-if(dir){if(!sub&&isM(id)&&x[0]!=="."){const q=await dirList(id,x);if(q)q.forEach(y=>out.push({name:x+"/"+y.name}))}}else out.push({name:x})}
+if(dir){if(!sub&&isC(id)&&x[0]!=="."){const q=await dirList(id,x);if(q)q.forEach(y=>out.push({name:x+"/"+y.name}))}}else out.push({name:x})}
 return out}catch(e){return null}}
 const pick=a=>a.find(x=>/^carta\./i.test(x.name))||a[0];
 async function loadCarta(f){const t=await readText("carta",{f});
@@ -546,8 +548,8 @@ async function apply(id,a){if(id==="audio"){setMusic(a);return true}if(id==="car
 async function manifest(){try{const r=await fetch("manifest.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return null;const j=await r.json();return j&&typeof j==="object"&&!Array.isArray(j)?j:null}catch(e){return null}}
 async function scan(){const mf=LOCAL?null:await manifest(),t=(LOCAL||mf)?null:await gh("git/trees/HEAD?recursive=1"),all=t&&t.tree?t.tree.filter(x=>x.type==="blob"):null;
 for(const id of Object.keys(DIR)){let a=null;
-if(mf&&Array.isArray(mf[DIR[id]]))a=mf[DIR[id]].filter(x=>isM(id)||x.name.indexOf("/")<0).map(x=>({name:x.name,sha:x.sha}));
-else if(all)a=all.filter(x=>x.path.startsWith(DIR[id]+"/")&&(isM(id)||x.path.indexOf("/",DIR[id].length+1)<0)).map(x=>({name:x.path.slice(DIR[id].length+1),sha:x.sha}));
+if(mf&&Array.isArray(mf[DIR[id]]))a=mf[DIR[id]].filter(x=>isC(id)||x.name.indexOf("/")<0).map(x=>({name:x.name,sha:x.sha}));
+else if(all)a=all.filter(x=>x.path.startsWith(DIR[id]+"/")&&(isC(id)||x.path.indexOf("/",DIR[id].length+1)<0)).map(x=>({name:x.path.slice(DIR[id].length+1),sha:x.sha}));
 else if(LOCAL)a=await listLocal(id);
 else{a=(await ghList(id))||await dirList(id)}
 if(!a){if(!(id in SIG)){let c=null;if(!LOCAL)try{c=JSON.parse(localStorage.getItem("isa:"+id))}catch(e){}SIG[id]=null;await apply(id,c)}continue}
@@ -556,12 +558,13 @@ if(!LOCAL)try{localStorage.setItem("isa:"+id,JSON.stringify(a))}catch(e){}
 const g=JSON.stringify(id==="carta"?(a.length?[pick(a)]:[]):a.map(x=>x.name));if(SIG[id]===g)continue;SIG[id]=g;
 if(!(await apply(id,a)))delete SIG[id]}}
 let LT=null;
-function renderLetter(){const P=String(LT||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean),sg=x=>x.startsWith("—");
+let LO="carta";
+function renderLetter(t){const P=String(t==null?LT:t||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean),sg=x=>x.startsWith("—");
 $("#lp").innerHTML=P.map(p=>`<p${sg(p)?' style="text-align:right"':""}>${esc(p)}</p>`).join("")}
 function drawCarta(t){if(t==null){LT=null;$("#carta-box").innerHTML=`<div class="em">${ic("mail")}<b>Aún no hay carta</b><small>${LOCAL?"Conecta la carpeta de la web con el botón de abajo para ver la carta.":"Agrega un archivo carta.txt en la carpeta carta-especial y aparecerá aquí."}</small></div>`;return}LT=String(t);
 $("#carta-box").innerHTML=`<div class="cs2"><div id="cl"><button class="env" id="env2" aria-label="Abrir la carta"><span class="seal">${ic("heart")}</span></button><p class="hint">Toca el sobre para abrir tu carta</p></div></div>`;
-$("#env2").onclick=askCode;if(!$("#lf").hidden)renderLetter()}
-function openLetter(){renderLetter();const l=$("#lf");l.hidden=false;l.scrollTop=0;$("#lx").focus();burst2()}
+$("#env2").onclick=askCode;if(!$("#lf").hidden&&LO==="carta")renderLetter()}
+function openLetter(t,src){LO=src||"carta";renderLetter(t);const l=$("#lf");l.hidden=false;l.scrollTop=0;$("#lx").focus();burst2()}
 /* Combinación de 8 números para abrir la carta (se guarda solo su huella, no el número) */
 I.back='<path d="M20 5H9l-6 7 6 7h11a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"/><path d="M12 9.5l4 5m0-5l-4 5"/>';
 I.lock='<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
@@ -586,7 +589,7 @@ const catName=c=>c===""?"General":nice(c);
 function cats(id){const m=new Map();(D[id]||[]).forEach(it=>{const c=it.c||"";if(!m.has(c))m.set(c,[]);m.get(c).push(it)});
 return[...m.entries()].sort((x,y)=>x[0]===""?-1:y[0]===""?1:x[0].localeCompare(y[0],"es",{numeric:true}))}
 /* Lista (en el orden en que se ve) de lo que muestra la ventana: todas las categorías o solo la elegida */
-function visible(id){if(!isM(id))return D[id]||[];return cats(id).filter(([c])=>CAT[id]===undefined||c===CAT[id]).flatMap(([,l])=>l)}
+function visible(id){if(!isC(id))return D[id]||[];return cats(id).filter(([c])=>CAT[id]===undefined||c===CAT[id]).flatMap(([,l])=>l)}
 function paintCats(id,cs,hc){const bar=$("#cb-"+id);bar.hidden=!hc;bar.innerHTML="";if(!hc)return;
 const add=(key,label,n,fo)=>{const b=document.createElement("button");b.type="button";b.className="cat"+(CAT[id]===key?" on":"");b.setAttribute("aria-pressed",CAT[id]===key);
 b.innerHTML=(fo?ic("folder"):"")+"<span></span><small></small>";b.querySelector("span").textContent=label;b.querySelector("small").textContent=n;
@@ -594,9 +597,9 @@ b.onclick=()=>{CAT[id]=key;draw(id);const p=bar.closest(".pane");if(p)p.scrollTo
 cs.forEach(([c,l])=>add(c,catName(c),l.length,true))}
 function tile(id,it,k,g){const b=document.createElement("button"),u=srcOf(id,it);b.className="fo";
 const vd=kindOf(it.f||it.u)==="vid";
-b.innerHTML=(id==="fotos"||id==="videos"?(vd?`<div class="th ph vd" style="--h:${(k*67+250)%360}">${u?`<video src="${esc(u)}#t=0.5" preload="metadata" muted playsinline></video>`:""}<span class="pl">${ic("play")}</span></div>`:`<div class="th ph">${u?`<img src="${esc(u)}" alt="" loading="lazy">`:ic("photo")}</div>`):`<div class="th doc">${ic(id==="carta"?"mail":"note")}</div>`)+"<b></b>";
+b.innerHTML=(id==="fotos"||id==="videos"?(vd?`<div class="th ph vd" style="--h:${(k*67+250)%360}">${u?`<video src="${esc(u)}#t=0.5" preload="metadata" muted playsinline></video>`:""}<span class="pl">${ic("play")}</span></div>`:`<div class="th ph">${u?`<img src="${esc(u)}" alt="" loading="lazy">`:ic("photo")}</div>`):`<div class="th doc">${ic(id==="carta"||id==="dedicatorias"?"mail":"note")}</div>`)+"<b></b>";
 if(id!=="fotos"&&id!=="videos")b.lastChild.textContent=it.n;b.onclick=()=>view(id,it);g.appendChild(b);const im=b.querySelector("img");if(im){let r=0;im.onerror=()=>{if(r++<20)setTimeout(()=>{im.src=u+(u.includes("?")?"&":"?")+"r="+r},6000)}}}
-function draw(id){const g=$("#fl-"+id);g.innerHTML="";const M=isM(id);let cs=[],hc=false;
+function draw(id){const g=$("#fl-"+id);g.innerHTML="";const M=isC(id);let cs=[],hc=false;
 if(M){cs=cats(id);hc=cs.some(([c])=>c!=="");if(!hc)CAT[id]=undefined;else if(CAT[id]===undefined||!cs.some(([c])=>c===CAT[id]))CAT[id]=cs[0][0];paintCats(id,cs,hc)}
 const L=M?visible(id):D[id];
 if(!(D[id]||[]).length)g.innerHTML=`<div class="em">${ic(id==="fotos"?"photo":id==="videos"?"film":"note")}<b>Esta carpeta está vacía</b><small>${LOCAL?`Conecta la carpeta de la web con el botón de abajo para ver los archivos de ${DIR[id]}.`:`Los archivos agregados a la carpeta ${DIR[id]} aparecerán aquí.`}</small></div>`;
@@ -606,6 +609,7 @@ const nf=cs.filter(([c])=>c!=="").length;
 $("#st-"+id).textContent=L.length+(L.length===1?" elemento":" elementos")+(hc?" · "+nf+(nf===1?" categoría":" categorías"):"")}
 async function view(id,it,dir){const u=srcOf(id,it),b=$("#vb"),med=id==="fotos"||id==="videos";
 if(med){if(!(VL&&VL.id===id&&VL.l.includes(it)))VL={id,l:visible(id).slice()};VI=Math.max(0,VL.l.indexOf(it))}else VL=null;
+if(id==="dedicatorias"){VL=null;let t=it.t;if(t==null&&u){t=await readText(id,it);if(t==null)t=""}openLetter(t,"ded");return}
 const nn=VL?VL.l.length:0;$("#vp").hidden=$("#vn").hidden=nn<2;
 const tk=++VTK;
 if(med&&u){await new Promise(r=>{const k=kindOf(it.f||it.u)==="vid",m=k?document.createElement("video"):new Image();m[k?"onloadedmetadata":"onload"]=r;m.onerror=r;if(k)m.preload="metadata";m.src=u;setTimeout(r,2500)});if(tk!==VTK)return}

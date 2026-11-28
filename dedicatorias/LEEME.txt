@@ -1,4 +1,5 @@
 CARPETA DE DEDICATORIAS
-Cada dedicatoria es un archivo .txt y se muestra sola. Separa los párrafos con una línea en blanco.
-Si el último párrafo empieza con "—", se muestra como firma.
-El título sale del nombre del archivo: "para-isa.txt" se muestra como "Para isa".
+Cada dedicatoria es un archivo .txt y se abre como una carta (sin contraseña). Separa los párrafos con una línea en blanco.
+Si el último párrafo empieza con "—", se muestra como firma alineada a la derecha.
+El título del sobre sale del nombre del archivo: "para-isa.txt" se muestra como "Para isa".
+CATEGORIAS: crea subcarpetas dentro de dedicatorias/ (por ejemplo "dedicatorias/Familia/") y cada una se muestra como una categoría. Los archivos sueltos quedan en "General".

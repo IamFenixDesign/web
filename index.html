@@ -171,6 +171,7 @@ dialog video{display:block;width:100%;max-height:70vh;background:#000}
 .sr{display:flex;align-items:center;gap:8px;height:32px;width:170px;padding:0 12px;margin:0 6px;border-radius:99px;background:var(--tab);color:var(--mu);font-size:.8rem}
 .tray{position:absolute;right:12px;display:flex;align-items:center;gap:10px;font-size:.72rem;text-align:right;line-height:1.25}
 .tray .ic{font-size:15px}
+.sfxb{display:inline-flex;padding:0;border:0;background:none;color:inherit;cursor:pointer}.sfxb.off{opacity:.45}.sfxb.off::after{content:"";position:absolute;width:18px;height:2px;margin:7px 0 0 -2px;background:currentColor;transform:rotate(-40deg)}
 .toast{position:fixed;left:50%;bottom:70px;transform:translate(-50%,20px);padding:10px 16px;border-radius:8px;background:var(--pane);border:1px solid var(--bd);box-shadow:var(--sh);opacity:0;pointer-events:none;transition:.25s;z-index:50;font-size:.9rem}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 @media (max-width:760px){.hero{grid-template-columns:1fr}.cw{order:2}.tray .ic,.ab{display:none}.win{left:0!important;top:0!important;width:100%!important;height:100%!important;max-height:100%!important}.win .pane{flex:1}.icons{flex-direction:row;flex-wrap:wrap;width:100%;align-content:flex-start}.di{width:78px}.tab:not(.on) span{display:none}.tab{padding:0 12px}.sub{max-width:none}}
@@ -453,6 +454,33 @@ button, .fo, .di, .tab, .ti {
 <div class="toast" id="toast"></div>
 <script>
 const $=s=>document.querySelector(s);
+/* ===== Efectos de sonido (sintetizados, sin archivos) ===== */
+let SFX_ON=true,ACX=null;try{SFX_ON=localStorage.getItem("isa:sfx")!=="0"}catch(e){}
+function sfx(t,n){if(!SFX_ON)return;try{
+const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!ACX)ACX=new AC();if(ACX.state==="suspended")ACX.resume();
+const a=ACX,T0=a.currentTime,out=a.createGain();out.gain.value=.5;out.connect(a.destination);
+const tone=(f,t0,d,o={})=>{const os=a.createOscillator(),g=a.createGain(),v=o.v||.18;os.type=o.w||"sine";os.frequency.setValueAtTime(f,T0+t0);if(o.to)os.frequency.exponentialRampToValueAtTime(o.to,T0+t0+d);
+g.gain.setValueAtTime(0.0001,T0+t0);g.gain.exponentialRampToValueAtTime(v,T0+t0+.008);g.gain.exponentialRampToValueAtTime(0.0001,T0+t0+d);os.connect(g);g.connect(out);os.start(T0+t0);os.stop(T0+t0+d+.03)};
+if(t==="click")tone(720,0,.07,{to:420,w:"triangle"});
+else if(t==="tab"){tone(520,0,.06,{w:"triangle"});tone(780,.05,.08,{w:"triangle"})}
+else if(t==="open"){tone(523,0,.09,{w:"triangle"});tone(784,.07,.14,{w:"triangle"})}
+else if(t==="close"){tone(784,0,.07,{w:"triangle"});tone(494,.06,.12,{w:"triangle"})}
+else if(t==="key")tone(560+(+n||0)*38,0,.06,{w:"triangle",v:.16});
+else if(t==="ok")[523,659,784,1047].forEach((f,i)=>tone(f,i*.09,.22,{v:.17}));
+else if(t==="err"){tone(190,0,.16,{w:"sawtooth",to:120,v:.1});tone(150,.14,.2,{w:"sawtooth",to:90,v:.1})}
+else if(t==="paper"){const len=Math.floor(a.sampleRate*.28),b=a.createBuffer(1,len,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=b;f.type="bandpass";f.frequency.value=3200;f.Q.value=.7;g.gain.value=.5;s.connect(f);f.connect(g);g.connect(out);s.start(T0)}
+}catch(e){}}
+/* Un sonido según lo que se toca */
+document.addEventListener("click",e=>{const el=e.target.closest&&e.target.closest("button,.fo,.di,.ti,.cat,.cg,[role=slider],#cake");if(!el||el.id==="sfxb")return;
+if(el.closest("#cdk")){return}
+if(el.id==="music-toggle"||el.classList.contains("mp-sk"))return sfx("click");
+if(el.matches(".wc button[data-a=max]"))return sfx("click");
+if(el.matches("#vx,#lx,#cdx,.cdx,.wc button,[aria-label^=Cerrar]"))return sfx("close");
+if(el.matches(".ti,.di,.fo"))return sfx("open");
+if(el.classList.contains("cat"))return sfx("tab");
+if(el.id==="env2"||el.id==="cake")return sfx("paper");
+sfx("click")},true);
 const I={folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',photo:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M3 17l5-5 4 4 3-3 6 6"/>',home:'<path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',film:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9.500v5l4.500-2.500z"/>',note:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.500 7l8.500 6 8.500-6"/>',play:'<path d="M8 5v14l11-7z" fill="currentColor"/>',plus:'<path d="M12 5v14M5 12h14"/>',min:'<path d="M5 12h14"/>',max:'<rect x="5" y="5" width="14" height="14" rx="2"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',gift:'<rect x="3" y="9" width="18" height="4" rx="1"/><path d="M5 13v7h14v-7M12 9v11M12 9C9.500 4.500 5.500 5.500 7 8c.7 1 5 1 5 1zm0 0c2.500-4.500 6.500-3.500 5-1-.7 1-5 1-5 1z"/>',heart:'<path d="M12 20.500S3.500 15.500 3.500 9.300A4.800 4.800 0 0 1 12 6.800a4.800 4.800 0 0 1 8.500 2.500c0 6.200-8.500 11.200-8.500 11.200z" fill="currentColor"/>',star:'<path d="M12 3l2.700 5.600 6.100.9-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100-4.400-4.300 6.100-.9z" fill="currentColor"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.500-4.500"/>',wifi:'<path d="M3 9a14 14 0 0 1 18 0M6 12.500a9 9 0 0 1 12 0M9 16a4 4 0 0 1 6 0"/>',vol:'<path d="M4 9.500v5h4l5 4v-13l-5 4zM16.500 9a4 4 0 0 1 0 6"/>'};
 const ic=n=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
 /* ===== Textos editables ===== */
@@ -467,7 +495,7 @@ const isC=id=>isM(id)||id==="dedicatorias";
 /* El contenido sale solo de los archivos de cada carpeta: no hay textos ni fotos de ejemplo dentro de la web */
 const DEF={fotos:[],videos:[],dedicatorias:[],carta:[]};
 /* ===== Interfaz ===== */
-$("#tk").innerHTML=T.map(([id,n,i])=>`<button class="ti" data-o="${id}" title="${n}" aria-label="${n}">${ic(i)}</button>`).join("")+`<div class="tray">${ic("wifi")}${ic("vol")}<div id="clk"></div></div>`;
+$("#tk").innerHTML=T.map(([id,n,i])=>`<button class="ti" data-o="${id}" title="${n}" aria-label="${n}">${ic(i)}</button>`).join("")+`<div class="tray">${ic("wifi")}<button class="sfxb${SFX_ON?"":" off"}" id="sfxb" type="button" aria-label="Efectos de sonido" title="Efectos de sonido">${ic("vol")}</button><div id="clk"></div></div>`;
 $("#vx").innerHTML=ic("x");
 const C=["#ff5fa2","#ffd23f","#7c5cff","#2ec4ff","#3ddc97","#ff8a3d"];
 const bunt=()=>{$("#bun").innerHTML=Array.from({length:Math.ceil(innerWidth/50)},(_,k)=>`<i style="background:${C[k%6]}"></i>`).join("")};bunt();addEventListener("resize",bunt);
@@ -575,9 +603,9 @@ $("#cdk").innerHTML=[1,2,3,4,5,6,7,8,9].map(n=>`<button data-k="${n}">${n}</butt
 function cPaint(){[...$("#cdd").children].forEach((d,i)=>d.classList.toggle("on",i<CB.length))}
 function askCode(){CB="";CBUSY=false;$("#cmsg").textContent="Escribe la combinación para abrirla";$("#cmsg").classList.remove("err");$("#cdd").classList.remove("err");cPaint();$("#cd").hidden=false}
 function closeCode(){$("#cd").hidden=true;const e=$("#env2");if(e)e.focus()}
-function cPress(k){if(CBUSY)return;if(k==="del")CB=CB.slice(0,-1);else if(CB.length<CODE_N)CB+=k;cPaint();if(CB.length<CODE_N)return;
-if(h53("isa-carta:"+CB)===CODE_H){$("#cd").hidden=true;openLetter()}
-else{CBUSY=true;$("#cmsg").textContent="Combinación incorrecta";$("#cmsg").classList.add("err");const d=$("#cdd");d.classList.remove("err");void d.offsetWidth;d.classList.add("err");
+function cPress(k){if(CBUSY)return;if(k!=="del"&&CB.length<CODE_N)sfx("key",k);else if(k==="del")sfx("click");if(k==="del")CB=CB.slice(0,-1);else if(CB.length<CODE_N)CB+=k;cPaint();if(CB.length<CODE_N)return;
+if(h53("isa-carta:"+CB)===CODE_H){sfx("ok");$("#cd").hidden=true;openLetter()}
+else{sfx("err");CBUSY=true;$("#cmsg").textContent="Combinación incorrecta";$("#cmsg").classList.add("err");const d=$("#cdd");d.classList.remove("err");void d.offsetWidth;d.classList.add("err");
 setTimeout(()=>{CB="";CBUSY=false;d.classList.remove("err");$("#cmsg").classList.remove("err");$("#cmsg").textContent="Inténtalo de nuevo";cPaint()},700)}}
 $("#cdk").addEventListener("click",e=>{const b=e.target.closest("button[data-k]");if(b)cPress(b.dataset.k)});
 $("#cdx").onclick=closeCode;$("#cd").addEventListener("click",e=>{if(e.target===$("#cd"))closeCode()});
@@ -654,6 +682,7 @@ function cuenta(){
  box.innerHTML=`<p class="cdl">Faltan para el 21 de diciembre</p><div class="cdr">${v.map((x,i)=>`<div class="cdc2"><b>${i?z(x):x}</b><span>${L[i]}</span></div>`).join("")}</div>`;
 }
 cuenta();setInterval(cuenta,1000);
+$("#sfxb").onclick=()=>{SFX_ON=!SFX_ON;try{localStorage.setItem("isa:sfx",SFX_ON?"1":"0")}catch(e){}$("#sfxb").classList.toggle("off",!SFX_ON);if(SFX_ON)sfx("click")};
 /* Música: usa cualquier archivo de audio de la carpeta audio. Mouse: pasar por el botón abre la lista. Táctil: mantener el dedo sobre el botón y deslizar a una canción. */
 I.mplay='<path d="M8 5.5v13a1 1 0 0 0 1.5.9l10.5-6.5a1 1 0 0 0 0-1.7L9.5 4.6A1 1 0 0 0 8 5.5z"/>';
 I.mpause='<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>';
